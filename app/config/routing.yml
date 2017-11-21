@@ -1,0 +1,27 @@
+game:
+    resource: "@GameBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    host:     '%admin_host%'
+
+_sonata_admin:
+    resource: .
+    type:     sonata_admin
+
+user_bundle:
+    resource: "@UserBundle/Resources/config/routing.yml"
+    host: "{user_host}"
+    prefix:   /
+    requirements:
+        user_host: '%user_host%'
+
+api_game:
+    resource: "@GameBundle/Controller"
+    type:     rest
+    host:     '%game_api_host%'

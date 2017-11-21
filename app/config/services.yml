@@ -1,0 +1,16 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+    igdb:
+        class: GameBundle\Services\IGDB
+        arguments:
+          $mashapeKey: '%mashape_key%'
+
+    my_success_handler:
+        class: UserBundle\Security\AuthenticationSuccessHandler
+        arguments: ['@lexik_jwt_authentication.jwt_manager', '@event_dispatcher']
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }

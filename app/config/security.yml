@@ -1,0 +1,77 @@
+## To get started with security, check out the documentation:
+## http://symfony.com/doc/current/book/security.html
+#security:
+#
+#    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+#    providers:
+#        in_memory:
+#            memory: ~
+#
+#    firewalls:
+#        # disables authentication for assets and the profiler, adapt it according to your needs
+#        dev:
+#            pattern: ^/(_(profiler|wdt)|css|images|js)/
+#            security: false
+#
+#        main:
+#            anonymous: ~
+#            # activate different ways to authenticate
+#
+#            # http_basic: ~
+#            # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
+#
+#            # form_login: ~
+#            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+
+    role_hierarchy:
+        ROLE_GAME:       ROLE_USER
+        ROLE_ADMIN:       ROLE_GAME
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+
+    firewalls:
+
+        login:
+            host: '%game_api_host%'
+            pattern:   ^/login
+            stateless: true
+            anonymous: true
+            form_login:
+                check_path:               /login_check
+#                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                success_handler:           my_success_handler
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                require_previous_session: false
+
+        api:
+            host: '%game_api_host%'
+            pattern:   ^/
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+        main:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+                # if you are using Symfony < 2.8, use the following config instead:
+                # csrf_provider: form.csrf_provider
+
+            logout:       true
+            anonymous:    true
+
+    access_control:
+        - { host: '%user_host%', path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: '%user_host%', path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: '%user_host%', path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: '%user_host%', path: ^/, role: ROLE_ADMIN }
+        - { host: '%game_api_host%', path: ^/games, role: ROLE_GAME }
+

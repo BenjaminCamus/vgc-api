@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Usergames list</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>State</th>
+            <th>Rating</th>
+            <th>Box</th>
+            <th>Manual</th>
+            <th>Version</th>
+            <th>Priceasked</th>
+            <th>Pricepaid</th>
+            <th>Priceresale</th>
+            <th>Pricesold</th>
+            <th>Purchasedate</th>
+            <th>Saledate</th>
+            <th>Progress</th>
+            <th>Note</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for userGame in userGames %}
+            <tr>
+                <td><a href="{{ path('usergame_show', { 'id': userGame.id }) }}">{{ userGame.id }}</a></td>
+                <td>{{ userGame.state }}</td>
+                <td>{{ userGame.rating }}</td>
+                <td>{% if userGame.box %}Yes{% else %}No{% endif %}</td>
+                <td>{% if userGame.manual %}Yes{% else %}No{% endif %}</td>
+                <td>{{ userGame.version }}</td>
+                <td>{{ userGame.priceAsked }}</td>
+                <td>{{ userGame.pricePaid }}</td>
+                <td>{{ userGame.priceResale }}</td>
+                <td>{{ userGame.priceSold }}</td>
+                <td>{% if userGame.purchaseDate %}{{ userGame.purchaseDate|date('Y-m-d') }}{% endif %}</td>
+                <td>{% if userGame.saleDate %}{{ userGame.saleDate|date('Y-m-d') }}{% endif %}</td>
+                <td>{{ userGame.progress }}</td>
+                <td>{{ userGame.note }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('usergame_show', { 'id': userGame.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('usergame_edit', { 'id': userGame.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('usergame_new') }}">Create a new userGame</a>
+        </li>
+    </ul>
+{% endblock %}
