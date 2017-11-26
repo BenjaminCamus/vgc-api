@@ -12,8 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class UserGame
 {
-    private $id;
-
     /**
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
@@ -121,16 +119,6 @@ class UserGame
      * @ORM\JoinColumn(name="sale_contact_id", referencedColumnName="id")
      **/
     private $saleContact;
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Get rating
