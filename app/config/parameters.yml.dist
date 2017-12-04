@@ -21,7 +21,7 @@ parameters:
     game_api_host: api.vgc.local
     admin_host: admin.vgc.local
 
-    mashape_key: 'YOUR_MASHAPE_KEY'
+    igdb_key: 'YOUR_IGDB_KEY'
 
     jwt_private_key_path: '%kernel.root_dir%/../var/jwt/private.pem'
     jwt_public_key_path:  '%kernel.root_dir%/../var/jwt/public.pem'

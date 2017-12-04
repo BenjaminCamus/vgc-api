@@ -7,7 +7,7 @@ services:
     igdb:
         class: GameBundle\Services\IGDB
         arguments:
-          $mashapeKey: '%mashape_key%'
+          $igdbKey: '%igdb_key%'
 
     my_success_handler:
         class: UserBundle\Security\AuthenticationSuccessHandler

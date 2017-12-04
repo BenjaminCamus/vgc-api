@@ -5,19 +5,19 @@ use Unirest;
 
 class IGDB
 {
-    private $mashapeKey;
+    private $igdbKey;
 
-    public function __construct($mashapeKey)
+    public function __construct($igdbKey)
     {
-        $this->mashapeKey = $mashapeKey;
+        $this->igdbKey = $igdbKey;
     }
 
     public function get($path)
     {
 
-        $response = Unirest\Request::get('https://igdbcom-internet-game-database-v1.p.mashape.com/' . $path,
+        $response = Unirest\Request::get('https://api-2445582011268.apicast.io/' . $path,
             array(
-                'X-Mashape-Key' => $this->mashapeKey,
+                'user-key' => $this->igdbKey,
                 'Accept' => 'application/json'
             )
         );
