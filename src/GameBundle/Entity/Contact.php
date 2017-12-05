@@ -26,7 +26,8 @@ class Contact
     private $email;
 
     /**
-     * @ORM\Column(name="first_name", nullable=true)
+     * @ORM\Column(name="first_name")
+     * @Assert\NotBlank()
      */
     private $firstName;
 
@@ -51,7 +52,7 @@ class Contact
     private $address;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $zipcode;
 
