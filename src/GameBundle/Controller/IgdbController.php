@@ -31,10 +31,11 @@ class IgdbController extends FOSRestController
 
         $platforms = [];
 
+        $returnGames = [];
+
         foreach ($igdb as $igdbGame) {
 
             if (!isset($igdbGame->cover) || !isset($igdbGame->platforms)) {
-                unset($igdbGame);
                 continue;
             }
 
@@ -84,9 +85,11 @@ class IgdbController extends FOSRestController
             }
 
             $igdbGame->platforms = $igdbGamePlatforms;
+
+            $returnGames[] = $igdbGame;
         }
 
-        return new JsonResponse($igdb);
+        return new JsonResponse($returnGames);
     }
 
     /**
