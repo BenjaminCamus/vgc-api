@@ -64,6 +64,33 @@ class UserGameController extends FOSRestController
     }
 
     /**
+     * @Rest\View
+     * @Rest\Delete("/user/games/{platformSlug}/{gameSlug}", requirements={"platformSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$", "gameSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$"})
+     */
+    public function deleteGameAction($platformSlug, $gameSlug)
+    {
+        $platformRepository = $this->getDoctrine()->getRepository('GameBundle:Platform');
+        $platform = $platformRepository->findOneBySlug($platformSlug);
+
+        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+        $game = $gameRepository->findOneBySlug($gameSlug);
+
+        $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
+        $userGame = $userGameRepository->findOneBy([
+            'user' => $this->getUser(),
+            'platform' => $platform,
+            'game' => $game
+        ]);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($userGame);
+        $em->flush();
+
+        $view = $this->view(null, 204);
+        return $this->handleView($view);
+    }
+
+    /**
      * @Rest\View(statusCode=Symfony\Component\HttpFoundation\Response::HTTP_CREATED)
      * @Rest\Post("/user/games/add")
      */
