@@ -148,6 +148,8 @@ class UserGameController extends FOSRestController
 
         if ($form->isValid()) {
 
+            $userGameReleaseDate = false;
+
             if (is_null($game)) {
 
                 // Game not in db : new Game
@@ -165,9 +167,22 @@ class UserGameController extends FOSRestController
                 $totalRatingCount = isset($igdbGame->total_rating_count) ? $igdbGame->total_rating_count : 0;
                 $game->setRatingCount($totalRatingCount);
                 $game->setIgdbUrl($igdbGame->url);
-                $game->setIgdbCreatedAt(new \DateTime(date('Y-m-d H:i:s', $igdbGame->created_at)));
-                $game->setIgdbUpdatedAt(new \DateTime(date('Y-m-d H:i:s', $igdbGame->updated_at)));
+                $game->setIgdbCreatedAt(new \DateTime(date('Y-m-d H:i:s', ($igdbGame->created_at / 1000))));
+                $game->setIgdbUpdatedAt(new \DateTime(date('Y-m-d H:i:s', ($igdbGame->updated_at / 1000))));
 
+                if ($igdbGame->release_dates) {
+
+                    $dates = [];
+                    foreach ($igdbGame->release_dates as $releaseDate) {
+                        if ($releaseDate->platform == $requestValues['platform']['igdbId']) {
+                            $dates[] = $releaseDate->date;
+                        }
+                    }
+
+                    if (count($dates) > 0) {
+                        $userGameReleaseDate = new \DateTime(date('Y-m-d H:i:s', (min($dates) / 1000)));
+                    }
+                }
 
                 // @TODO: cover + screenshots(ajouter images si absentes, recherche avec url)
                 // @TODO: rendre image->url unique
@@ -301,7 +316,6 @@ class UserGameController extends FOSRestController
                     unset($requestValues[$type . 'Contact']['id']);
                     $formContact->submit($requestValues[$type . 'Contact']); // Validation des données
 
-//                    return var_dump($formContact->isValid(), $requestValues[$type . 'Contact']);
                     if ($formContact->isValid()) {
                         $contact = new Contact();
                         $contact->setEmail($requestValues[$type . 'Contact']['email']);
@@ -338,6 +352,10 @@ class UserGameController extends FOSRestController
             $userGame->setUser($this->getUser());
             $userGame->setGame($game);
             $userGame->setPlatform($platform);
+
+            if ($userGameReleaseDate) {
+                $userGame->setReleaseDate($userGameReleaseDate);
+            }
 
             $userGame->setRating($request->request->get('rating'));
             $userGame->setBox($request->request->get('box'));
