@@ -26,7 +26,7 @@ class Contact
     private $email;
 
     /**
-     * @ORM\Column(name="first_name", nullable=true)
+     * @ORM\Column(name="first_name")
      */
     private $firstName;
 
@@ -51,7 +51,7 @@ class Contact
     private $address;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $zipcode;
 
@@ -185,7 +185,9 @@ class Contact
      */
     public function setPhone($phone)
     {
-        $this->phone = $phone;
+        if ($phone !== '') {
+            $this->phone = $phone;
+        }
 
         return $this;
     }
@@ -233,7 +235,9 @@ class Contact
      */
     public function setZipcode($zipcode)
     {
-        $this->zipcode = $zipcode;
+        if ($zipcode !== '') {
+            $this->zipcode = $zipcode;
+        }
 
         return $this;
     }
