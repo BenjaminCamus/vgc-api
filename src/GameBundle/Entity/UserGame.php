@@ -34,6 +34,11 @@ class UserGame
     private $platform;
 
     /**
+     * @ORM\Column(type="date", name="release_date")
+     */
+    private $releaseDate;
+
+    /**
      * @ORM\Column(type="integer")
      * @Assert\Range(min = 0, max = 20)
      */
@@ -476,6 +481,30 @@ class UserGame
     public function setPlatform(Platform $platform)
     {
         $this->platform = $platform;
+
+        return $this;
+    }
+
+    /**
+     * Get releaseDate
+     *
+     * @return \DateTime
+     */
+    public function getReleaseDate()
+    {
+        return $this->releaseDate;
+    }
+
+    /**
+     * Set releaseDate
+     *
+     * @param \DateTime $releaseDate
+     *
+     * @return UserGame
+     */
+    public function setReleaseDate($releaseDate)
+    {
+        $this->releaseDate = $releaseDate;
 
         return $this;
     }
