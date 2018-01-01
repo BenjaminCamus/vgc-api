@@ -34,7 +34,7 @@ class UserGame
     private $platform;
 
     /**
-     * @ORM\Column(type="date", name="release_date")
+     * @ORM\Column(type="date", name="release_date", nullable=true)
      */
     private $releaseDate;
 
@@ -312,7 +312,11 @@ class UserGame
      */
     public function setPriceSold($priceSold)
     {
-        $this->priceSold = $priceSold;
+        if ($priceSold == '') {
+            $this->priceSold = null;
+        } else {
+            $this->priceSold = $priceSold;
+        }
 
         return $this;
     }

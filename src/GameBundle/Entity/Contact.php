@@ -185,7 +185,9 @@ class Contact
      */
     public function setPhone($phone)
     {
-        if ($phone !== '') {
+        if ($phone == '') {
+            $this->phone = null;
+        } else {
             $this->phone = $phone;
         }
 
@@ -235,7 +237,9 @@ class Contact
      */
     public function setZipcode($zipcode)
     {
-        if ($zipcode !== '') {
+        if ($zipcode == '') {
+            $this->zipcode = null;
+        } else {
             $this->zipcode = $zipcode;
         }
 
