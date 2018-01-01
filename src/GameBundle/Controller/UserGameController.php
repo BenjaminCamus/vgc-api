@@ -143,6 +143,7 @@ class UserGameController extends FOSRestController
         }
 
         // Form UserGame
+        $formValues['releaseDate'] = null;
         $form = $this->createForm(UserGameType::class);
         $form->submit($formValues); // Validation des données
 
