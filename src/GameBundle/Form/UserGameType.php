@@ -17,6 +17,7 @@ class UserGameType extends AbstractType
         $builder->add('user')
             ->add('game')
             ->add('platform')
+            ->add('releaseDate')
             ->add('rating')
             ->add('box')
             ->add('manual')
