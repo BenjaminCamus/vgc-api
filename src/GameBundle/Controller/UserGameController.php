@@ -22,6 +22,7 @@ use GameBundle\Form\UserGameType;
 use GameBundle\Utils\IGDB;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserGameController extends FOSRestController
 {
@@ -52,13 +53,15 @@ class UserGameController extends FOSRestController
         $game = $gameRepository->findOneBySlug($gameSlug);
 
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        $userGameCheck = $userGameRepository->findBy([
+        $userGame = $userGameRepository->findOneBy([
             'user' => $this->getUser(),
             'platform' => $platform,
             'game' => $game
         ]);
 
-        $userGame = $userGameCheck[0];
+        if (is_null($userGame)) {
+            throw new HttpException(404, "User Game Not Found");
+        }
 
         return $userGame;
     }
@@ -109,7 +112,7 @@ class UserGameController extends FOSRestController
         }
         $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
         $game = $gameRepository->findOneByIgdbId($requestValues['game']['igdbId']);
-        $formValues['game'] = is_null($game) ? null : $game->getId();
+        $formValues['game'] = $game->getId();
 
         // Platform
         if (!isset($requestValues['platform']) || !isset($requestValues['platform']['igdbId'])) {
@@ -159,6 +162,11 @@ class UserGameController extends FOSRestController
 
                 // Get IGDB game
                 $igdb = $igdbService->get('games/' . $game->getIgdbId() . '?fields=*');
+
+                if (!isset($igdb[0])) {
+                    throw new HttpException(404, "IGDB Game Not Found");
+                }
+
                 $igdbGame = $igdb[0];
 
                 // Game fields
