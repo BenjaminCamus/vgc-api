@@ -479,6 +479,30 @@ class Game
     }
 
     /**
+     * Add series
+     *
+     * @param Series $series
+     *
+     * @return Game
+     */
+    public function addSeries(Series $series)
+    {
+        $this->series[] = $series;
+
+        return $this;
+    }
+
+    /**
+     * Remove series
+     *
+     * @param Series $series
+     */
+    public function removeSeries(Series $series)
+    {
+        $this->series->removeElement($series);
+    }
+
+    /**
      * Get series
      *
      * @return Series
