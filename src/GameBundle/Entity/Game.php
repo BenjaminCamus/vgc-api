@@ -90,9 +90,12 @@ class Game
     private $screenshots;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Series")
-     * @ORM\JoinColumn(name="series_id", referencedColumnName="id")
-     **/
+     * @ORM\ManyToMany(targetEntity="Series")
+     * @ORM\JoinTable(name="games__series",
+     *      joinColumns={@ORM\JoinColumn(name="game_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="series_id", referencedColumnName="id")}
+     *      )
+     */
     private $series;
 
     /**

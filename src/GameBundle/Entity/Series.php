@@ -29,23 +29,13 @@ class Series
     private $slug;
 
     /**
-     * @ORM\Column(type="integer", name="igdb_id", unique=true, nullable=true)
-     */
-    private $igdbId;
-
-    /**
-     * @ORM\Column(name="igdb_url", nullable=true)
-     */
-    private $igdbUrl;
-
-    /**
      * To String
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->name;
+        return (string)$this->name;
     }
 
     /**
@@ -73,7 +63,7 @@ class Series
      *
      * @param string $name
      *
-     * @return Series
+     * @return Place
      */
     public function setName($name)
     {
@@ -97,59 +87,11 @@ class Series
      *
      * @param string $slug
      *
-     * @return Series
+     * @return Place
      */
     public function setSlug($slug)
     {
         $this->slug = $slug;
-
-        return $this;
-    }
-
-    /**
-     * Get igdbId
-     *
-     * @return integer
-     */
-    public function getIgdbId()
-    {
-        return $this->igdbId;
-    }
-
-    /**
-     * Set igdbId
-     *
-     * @param integer $igdbId
-     *
-     * @return Game
-     */
-    public function setIgdbId($igdbId)
-    {
-        $this->igdbId = $igdbId;
-
-        return $this;
-    }
-
-    /**
-     * Get igdbUrl
-     *
-     * @return string
-     */
-    public function getIgdbUrl()
-    {
-        return $this->igdbUrl;
-    }
-
-    /**
-     * Set igdbUrl
-     *
-     * @param string $igdbUrl
-     *
-     * @return Series
-     */
-    public function setIgdbUrl($igdbUrl)
-    {
-        $this->igdbUrl = $igdbUrl;
 
         return $this;
     }
