@@ -27,6 +27,7 @@ class Contact
 
     /**
      * @ORM\Column(name="first_name")
+     * @Assert\NotBlank()
      */
     private $firstName;
 
