@@ -27,8 +27,7 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_GAME:       ROLE_USER
-        ROLE_ADMIN:       ROLE_GAME
+        ROLE_ADMIN:       ROLE_USER
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 
     providers:
@@ -69,9 +68,7 @@ security:
             anonymous:    true
 
     access_control:
-        - { host: '%user_host%', path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { host: '%user_host%', path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { host: '%user_host%', path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { host: '%user_host%', path: ^/, role: ROLE_ADMIN }
-        - { host: '%game_api_host%', path: ^/games, role: ROLE_GAME }
+        - { host: '%admin_host%', path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: '%admin_host%', path: ^/, role: ROLE_ADMIN }
+        - { host: '%game_api_host%', role: ROLE_USER }
 

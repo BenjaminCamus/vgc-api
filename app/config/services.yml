@@ -14,10 +14,3 @@ services:
         arguments: ['@lexik_jwt_authentication.jwt_manager', '@event_dispatcher']
         tags:
             - { name: 'monolog.logger', channel: 'security' }
-
-
-    palma_api.event.jwt_created_listener:
-          class: UserBundle\EventListener\JWTCreatedListener
-          arguments: [ '@request_stack' ]
-          tags:
-              - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }

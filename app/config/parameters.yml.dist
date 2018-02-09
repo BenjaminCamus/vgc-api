@@ -17,7 +17,6 @@ parameters:
         address:        noreply@example.com
         sender_name:    VGC
 
-    user_host: vgc.local|www.vgc.local
     game_api_host: api.vgc.local
     admin_host: admin.vgc.local
 
