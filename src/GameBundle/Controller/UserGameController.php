@@ -112,7 +112,7 @@ class UserGameController extends FOSRestController
         }
         $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
         $game = $gameRepository->findOneByIgdbId($requestValues['game']['igdbId']);
-        $formValues['game'] = $game->getId();
+        $formValues['game'] = is_null($game) ? null : $game->getId();
 
         // Platform
         if (!isset($requestValues['platform']) || !isset($requestValues['platform']['igdbId'])) {
