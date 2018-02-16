@@ -48,6 +48,11 @@ security:
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
                 require_previous_session: false
 
+        register:
+            host: '%game_api_host%'
+            pattern:   ^/api_register
+            anonymous: true
+
         api:
             host: '%game_api_host%'
             pattern:   ^/
@@ -69,6 +74,8 @@ security:
 
     access_control:
         - { host: '%admin_host%', path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: '%admin_host%', path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { host: '%admin_host%', path: ^/, role: ROLE_ADMIN }
+        - { host: '%game_api_host%', path: ^/api_register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { host: '%game_api_host%', role: ROLE_USER }
 

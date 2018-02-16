@@ -18,3 +18,8 @@ api_game:
     resource: "@GameBundle/Controller"
     type:     rest
     host:     '%game_api_host%'
+
+user:
+    resource: "@UserBundle/Controller"
+    type:     rest
+    host:     '%game_api_host%'
