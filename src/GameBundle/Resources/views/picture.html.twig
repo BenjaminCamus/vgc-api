@@ -1,6 +1,8 @@
 {% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
 {% block field %}
-    <div>
+    {% if object.url|slice(0, 2) == '//' %}
         <img src="http:{{ object.url }}">
-    </div>
+    {% else %}
+        <img src="{{ object.url }}">
+    {% endif %}
 {% endblock %}
