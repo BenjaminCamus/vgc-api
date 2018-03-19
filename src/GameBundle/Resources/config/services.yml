@@ -1,64 +1,64 @@
 services:
 
 #
-# VGC
+# Games
 #
     game.admin.game:
         class: GameBundle\Admin\GameAdmin
         arguments: [~, GameBundle\Entity\Game, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: VGC, label: Game }
-
-    game.admin.platform:
-        class: GameBundle\Admin\PlatformAdmin
-        arguments: [~, GameBundle\Entity\Platform, SonataAdminBundle:CRUD]
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: VGC, group: Tags, label: Platform }
+            - { name: sonata.admin, manager_type: orm, group: Games, label: Games }
 
     game.admin.user_game:
         class: GameBundle\Admin\UserGameAdmin
         arguments: [~, GameBundle\Entity\UserGame, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: VGC, label: UserGame }
+            - { name: sonata.admin, manager_type: orm, group: Games, label: Users Games }
+
+    game.admin.platform:
+        class: GameBundle\Admin\PlatformAdmin
+        arguments: [~, GameBundle\Entity\Platform, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Games, label: Platforms }
 
     game.admin.image:
         class: GameBundle\Admin\ImageAdmin
         arguments: [~, GameBundle\Entity\Image, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: VGC, label: Image }
+            - { name: sonata.admin, manager_type: orm, group: Games, label: Images }
 
     game.admin.contact:
         class: GameBundle\Admin\ContactAdmin
         arguments: [~, GameBundle\Entity\Contact, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: VGC, label: Contact }
+            - { name: sonata.admin, manager_type: orm, group: Games, label: Contacts }
 
     game.admin.place:
         class: GameBundle\Admin\PlaceAdmin
         arguments: [~, GameBundle\Entity\Place, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: VGC, label: Place }
+            - { name: sonata.admin, manager_type: orm, group: Games, label: Places }
 
 #
-# IGDB
+# Tags
 #
     game.admin.company:
         class: GameBundle\Admin\CompanyAdmin
         arguments: [~, GameBundle\Entity\Company, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Tags, label: Company }
+            - { name: sonata.admin, manager_type: orm, group: Tags, label: Companies }
 
     game.admin.genre:
         class: GameBundle\Admin\GenreAdmin
         arguments: [~, GameBundle\Entity\Genre, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Tags, label: Genre }
+            - { name: sonata.admin, manager_type: orm, group: Tags, label: Genres }
 
     game.admin.mode:
         class: GameBundle\Admin\ModeAdmin
         arguments: [~, GameBundle\Entity\Mode, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Tags, label: Mode }
+            - { name: sonata.admin, manager_type: orm, group: Tags, label: Modes }
 
     game.admin.series:
         class: GameBundle\Admin\SeriesAdmin
@@ -70,4 +70,4 @@ services:
         class: GameBundle\Admin\ThemeAdmin
         arguments: [~, GameBundle\Entity\Theme, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: Tags, label: Theme }
+            - { name: sonata.admin, manager_type: orm, group: Tags, label: Themes }

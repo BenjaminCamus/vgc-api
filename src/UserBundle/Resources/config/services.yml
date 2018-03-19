@@ -1,0 +1,6 @@
+services:
+    user.admin.user:
+        class: UserBundle\Admin\UserAdmin
+        arguments: [~, UserBundle\Entity\User, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Users, label: Users }
