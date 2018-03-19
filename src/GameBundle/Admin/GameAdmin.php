@@ -59,6 +59,7 @@ class GameAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
+            ->add('id', null, array('disabled' => true, 'required' => false))
             ->add('name')
             ->add('series')
             ->add('developers')

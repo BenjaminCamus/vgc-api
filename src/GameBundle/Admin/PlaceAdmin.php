@@ -49,6 +49,7 @@ class PlaceAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
+            ->add('id', null, array('disabled' => true, 'required' => false))
             ->add('name')
             ->add('slug', null, array('disabled' => true, 'required' => false));
     }
