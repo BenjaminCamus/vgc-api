@@ -139,6 +139,7 @@ class Game
      */
     public function __construct()
     {
+        $this->series = new \Doctrine\Common\Collections\ArrayCollection();
         $this->developers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->publishers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->modes = new \Doctrine\Common\Collections\ArrayCollection();
