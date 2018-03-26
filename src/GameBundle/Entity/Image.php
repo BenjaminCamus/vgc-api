@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="game_image")
  */
-class Image
+class Image extends BaseCreateUpdate
 {
     /**
      * @var int
@@ -54,7 +54,7 @@ class Image
      */
     public function __toString()
     {
-        return $this->url;
+        return (string)$this->url;
     }
 
     /**

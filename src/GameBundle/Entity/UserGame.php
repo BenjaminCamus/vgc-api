@@ -3,14 +3,13 @@ namespace GameBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="user_game")
  */
-class UserGame
+class UserGame extends BaseCreateUpdate
 {
     /**
      * @ORM\Id

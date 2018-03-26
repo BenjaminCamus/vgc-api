@@ -3,30 +3,39 @@ namespace GameBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="game_series")
- */
-class Series extends BaseCreateUpdate
+
+class BaseObject extends BaseCreateUpdate
 {
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="guid")
      * @ORM\GeneratedValue(strategy="UUID")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column
+     * @Assert\NotBlank()
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column
      * @Gedmo\Slug(fields={"name"})
      */
-    private $slug;
+    protected $slug;
+
+    /**
+     * @ORM\Column(type="integer", name="igdb_id", unique=true)
+     */
+    protected $igdbId;
+
+    /**
+     * @ORM\Column(name="igdb_url")
+     */
+    protected $igdbUrl;
 
     /**
      * To String
@@ -63,7 +72,7 @@ class Series extends BaseCreateUpdate
      *
      * @param string $name
      *
-     * @return Place
+     * @return Company
      */
     public function setName($name)
     {
@@ -87,11 +96,59 @@ class Series extends BaseCreateUpdate
      *
      * @param string $slug
      *
-     * @return Place
+     * @return Company
      */
     public function setSlug($slug)
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get igdbId
+     *
+     * @return integer
+     */
+    public function getIgdbId()
+    {
+        return $this->igdbId;
+    }
+
+    /**
+     * Set igdbId
+     *
+     * @param integer $igdbId
+     *
+     * @return Game
+     */
+    public function setIgdbId($igdbId)
+    {
+        $this->igdbId = $igdbId;
+
+        return $this;
+    }
+
+    /**
+     * Get igdbUrl
+     *
+     * @return string
+     */
+    public function getIgdbUrl()
+    {
+        return $this->igdbUrl;
+    }
+
+    /**
+     * Set igdbUrl
+     *
+     * @param string $igdbUrl
+     *
+     * @return Company
+     */
+    public function setIgdbUrl($igdbUrl)
+    {
+        $this->igdbUrl = $igdbUrl;
 
         return $this;
     }

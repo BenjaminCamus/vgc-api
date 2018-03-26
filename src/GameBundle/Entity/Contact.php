@@ -2,7 +2,6 @@
 namespace GameBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -10,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="game_contact")
  * @ORM\Entity(repositoryClass="GameBundle\Repository\ContactRepository")
  */
-class Contact
+class Contact extends BaseCreateUpdate
 {
     /**
      * @ORM\Id

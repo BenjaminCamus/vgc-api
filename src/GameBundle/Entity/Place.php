@@ -8,7 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @ORM\Table(name="game_place")
  */
-class Place
+class Place extends BaseCreateUpdate
 {
     /**
      * @ORM\Id
