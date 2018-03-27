@@ -34,7 +34,7 @@ class BaseCreateUpdate
      *
      * @param \DateTime $createdAt
      *
-     * @return Game
+     * @return BaseCreateUpdate
      */
     public function setCreatedAt($createdAt)
     {
@@ -58,7 +58,7 @@ class BaseCreateUpdate
      *
      * @param \DateTime $updatedAt
      *
-     * @return Game
+     * @return BaseCreateUpdate
      */
     public function setUpdatedAt($updatedAt)
     {
