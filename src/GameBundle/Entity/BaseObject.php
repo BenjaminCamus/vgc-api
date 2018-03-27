@@ -72,7 +72,7 @@ class BaseObject extends BaseCreateUpdate
      *
      * @param string $name
      *
-     * @return Company
+     * @return BaseObject
      */
     public function setName($name)
     {
@@ -96,7 +96,7 @@ class BaseObject extends BaseCreateUpdate
      *
      * @param string $slug
      *
-     * @return Company
+     * @return BaseObject
      */
     public function setSlug($slug)
     {
@@ -120,7 +120,7 @@ class BaseObject extends BaseCreateUpdate
      *
      * @param integer $igdbId
      *
-     * @return Game
+     * @return BaseObject
      */
     public function setIgdbId($igdbId)
     {
@@ -144,7 +144,7 @@ class BaseObject extends BaseCreateUpdate
      *
      * @param string $igdbUrl
      *
-     * @return Company
+     * @return BaseObject
      */
     public function setIgdbUrl($igdbUrl)
     {
