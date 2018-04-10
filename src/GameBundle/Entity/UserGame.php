@@ -38,7 +38,7 @@ class UserGame extends BaseCreateUpdate
     private $releaseDate;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      * @Assert\Range(min = 0, max = 20)
      */
     private $rating;
@@ -60,12 +60,12 @@ class UserGame extends BaseCreateUpdate
     private $version;
 
     /**
-     * @ORM\Column(type="integer", name="price_asked")
+     * @ORM\Column(type="integer", name="price_asked", nullable=true)
      */
     private $priceAsked;
 
     /**
-     * @ORM\Column(type="integer", name="price_paid")
+     * @ORM\Column(type="integer", name="price_paid", nullable=true)
      */
     private $pricePaid;
 
@@ -80,7 +80,7 @@ class UserGame extends BaseCreateUpdate
     private $priceSold;
 
     /**
-     * @ORM\Column(type="date", name="purchase_date")
+     * @ORM\Column(type="date", name="purchase_date", nullable=true)
      */
     private $purchaseDate;
 
@@ -239,7 +239,11 @@ class UserGame extends BaseCreateUpdate
      */
     public function setPriceAsked($priceAsked)
     {
-        $this->priceAsked = $priceAsked;
+        if ($priceAsked == '') {
+            $this->priceAsked = null;
+        } else {
+            $this->priceAsked = $priceAsked;
+        }
 
         return $this;
     }
@@ -263,7 +267,13 @@ class UserGame extends BaseCreateUpdate
      */
     public function setPricePaid($pricePaid)
     {
-        $this->pricePaid = $pricePaid;
+        if ($pricePaid == '') {
+            $this->pricePaid = null;
+        } else {
+            $this->pricePaid = $pricePaid;
+        }
+
+        return $this;
 
         return $this;
     }
@@ -287,7 +297,11 @@ class UserGame extends BaseCreateUpdate
      */
     public function setPriceResale($priceResale)
     {
-        $this->priceResale = $priceResale;
+        if ($priceResale == '') {
+            $this->priceResale = null;
+        } else {
+            $this->priceResale = $priceResale;
+        }
 
         return $this;
     }
@@ -529,7 +543,7 @@ class UserGame extends BaseCreateUpdate
      *
      * @return UserGame
      */
-    public function setPurchasePlace(Place $purchasePlace)
+    public function setPurchasePlace(Place $purchasePlace = null)
     {
         $this->purchasePlace = $purchasePlace;
 
@@ -577,7 +591,7 @@ class UserGame extends BaseCreateUpdate
      *
      * @return UserGame
      */
-    public function setPurchaseContact(Contact $purchaseContact)
+    public function setPurchaseContact(Contact $purchaseContact = null)
     {
         $this->purchaseContact = $purchaseContact;
 

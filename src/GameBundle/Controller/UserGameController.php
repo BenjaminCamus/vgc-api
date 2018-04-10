@@ -126,10 +126,6 @@ class UserGameController extends FOSRestController
         $contactRepository = $this->getDoctrine()->getRepository('GameBundle:Contact');
         $placeRepository = $this->getDoctrine()->getRepository('GameBundle:Place');
 
-        if (!isset($requestValues['purchaseContact']) || !isset($requestValues['purchaseContact']['id'])) {
-            return View::create(['message' => 'Purchase Contact Id is missing.'], Response::HTTP_NOT_FOUND);
-        }
-
         foreach (['purchase', 'sale'] as $type) {
 
             $formValues[$type . 'Contact'] = ${$type . 'Contact'} = null;
