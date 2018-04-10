@@ -274,8 +274,6 @@ class UserGame extends BaseCreateUpdate
         }
 
         return $this;
-
-        return $this;
     }
 
     /**
