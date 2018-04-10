@@ -16,14 +16,16 @@ class ContactAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('email')
             ->add('firstName')
             ->add('lastName')
             ->add('nickname')
+            ->add('email')
             ->add('phone')
             ->add('address')
             ->add('zipcode')
-            ->add('city');
+            ->add('city')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 
     /**
@@ -32,14 +34,13 @@ class ContactAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('email')
             ->add('firstName')
             ->add('lastName')
             ->add('nickname')
-            ->add('phone')
-            ->add('address')
-            ->add('zipcode')
+            ->add('email')
             ->add('city')
+            ->add('updatedAt')
+            ->add('createdAt')
             ->add('_action', null, array(
                 'actions' => array(
                     'show' => array(),
@@ -56,10 +57,10 @@ class ContactAdmin extends AbstractAdmin
     {
         $formMapper
             ->add('id', null, array('disabled' => true, 'required' => false))
-            ->add('email')
             ->add('firstName')
             ->add('lastName')
             ->add('nickname')
+            ->add('email')
             ->add('phone')
             ->add('address')
             ->add('zipcode')
@@ -72,13 +73,15 @@ class ContactAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('email')
             ->add('firstName')
             ->add('lastName')
             ->add('nickname')
+            ->add('email')
             ->add('phone')
             ->add('address')
             ->add('zipcode')
-            ->add('city');
+            ->add('city')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 }

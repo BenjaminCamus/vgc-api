@@ -30,7 +30,9 @@ class IgdbObjectAdmin extends AbstractAdmin
             ->add('name')
             ->add('slug')
             ->add('igdbId')
-            ->add('igdbUrl');
+            ->add('igdbUrl')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 
     /**
@@ -41,8 +43,8 @@ class IgdbObjectAdmin extends AbstractAdmin
         $listMapper
             ->add('name')
             ->add('slug')
-            ->add('igdbId')
-            ->add('igdbUrl')
+            ->add('updatedAt')
+            ->add('createdAt')
             ->add('_action', null, array(
                 'actions' => array(
                     'show' => array(),
@@ -71,6 +73,8 @@ class IgdbObjectAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name');
+            ->add('name')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 }

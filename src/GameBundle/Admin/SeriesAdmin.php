@@ -60,6 +60,8 @@ class SeriesAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name');
+            ->add('name')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 }

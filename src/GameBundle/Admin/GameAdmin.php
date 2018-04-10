@@ -17,7 +17,6 @@ class GameAdmin extends AbstractAdmin
     {
         $datagridMapper
             ->add('name')
-            ->add('slug')
             ->add('rating')
             ->add('ratingCount')
             ->add('igdbId')
@@ -38,12 +37,6 @@ class GameAdmin extends AbstractAdmin
             ->add('slug')
             ->add('rating')
             ->add('ratingCount')
-            ->add('igdbId')
-            ->add('igdbUrl')
-            ->add('igdbCreatedAt')
-            ->add('igdbUpdatedAt')
-            ->add('createdAt')
-            ->add('updatedAt')
             ->add('_action', null, array(
                 'actions' => array(
                     'show' => array(),
@@ -73,8 +66,16 @@ class GameAdmin extends AbstractAdmin
     {
         $showMapper
             ->add('name')
+            ->add('rating')
+            ->add('ratingCount')
+            ->add('igdbId')
+            ->add('igdbUrl')
+            ->add('igdbCreatedAt')
+            ->add('igdbUpdatedAt')
             ->add('series')
             ->add('developers')
-            ->add('publishers');
+            ->add('publishers')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 }

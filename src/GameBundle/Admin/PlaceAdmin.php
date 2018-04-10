@@ -23,7 +23,9 @@ class PlaceAdmin extends AbstractAdmin
     {
         $datagridMapper
             ->add('name')
-            ->add('slug');
+            ->add('slug')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 
     /**
@@ -60,6 +62,8 @@ class PlaceAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name');
+            ->add('name')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 }

@@ -26,7 +26,9 @@ class ImageAdmin extends AbstractAdmin
             ->add('url')
             ->add('width')
             ->add('height')
-            ->add('cloudinaryId');
+            ->add('cloudinaryId')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 
     /**
@@ -40,6 +42,8 @@ class ImageAdmin extends AbstractAdmin
             ))
             ->add('width')
             ->add('height')
-            ->add('cloudinaryId');
+            ->add('cloudinaryId')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 }

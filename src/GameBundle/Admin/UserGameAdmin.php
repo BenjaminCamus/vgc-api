@@ -29,7 +29,9 @@ class UserGameAdmin extends AbstractAdmin
             ->add('purchaseDate')
             ->add('saleDate')
             ->add('progress')
-            ->add('note');
+            ->add('note')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 
     /**
@@ -102,6 +104,8 @@ class UserGameAdmin extends AbstractAdmin
             ->add('purchaseDate')
             ->add('saleDate')
             ->add('progress')
-            ->add('note');
+            ->add('note')
+            ->add('updatedAt')
+            ->add('createdAt');
     }
 }
