@@ -18,6 +18,7 @@ class UserGameAdmin extends AbstractAdmin
         $datagridMapper
             ->add('user')
             ->add('game')
+            ->add('platform')
             ->add('rating')
             ->add('box')
             ->add('manual')
@@ -42,6 +43,7 @@ class UserGameAdmin extends AbstractAdmin
         $listMapper
             ->add('user')
             ->add('game')
+            ->add('platform')
             ->add('rating')
             ->add('box')
             ->add('manual')
@@ -71,6 +73,7 @@ class UserGameAdmin extends AbstractAdmin
         $formMapper
             ->add('user')
             ->add('game')
+            ->add('platform')
             ->add('rating')
             ->add('box')
             ->add('manual')
@@ -93,6 +96,7 @@ class UserGameAdmin extends AbstractAdmin
         $showMapper
             ->add('user')
             ->add('game')
+            ->add('platform')
             ->add('rating')
             ->add('box')
             ->add('manual')
@@ -102,7 +106,11 @@ class UserGameAdmin extends AbstractAdmin
             ->add('priceResale')
             ->add('priceSold')
             ->add('purchaseDate')
+            ->add('purchaseContact')
+            ->add('purchasePlace')
             ->add('saleDate')
+            ->add('saleContact')
+            ->add('salePlace')
             ->add('progress')
             ->add('note')
             ->add('updatedAt')

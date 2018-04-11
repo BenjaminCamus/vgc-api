@@ -61,6 +61,24 @@ class Contact extends BaseCreateUpdate
     private $city;
 
     /**
+     * To String
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        // Contact
+        $display = '';
+
+        $display .= $this->firstName != '' ? ' ' . $this->firstName : '';
+        $display .= $this->lastName != '' ? ' ' . $this->lastName : '';
+        $display .= $this->nickname != '' && $this->nickname != $this->firstName ? ' ' . $this->nickname : '';
+        $display .= $this->city != '' ? ' (' . $this->city . ')' : '';
+
+        return $display;
+    }
+
+    /**
      * Get id
      *
      * @return integer
