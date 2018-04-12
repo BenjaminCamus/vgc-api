@@ -60,22 +60,22 @@ class UserGame extends BaseCreateUpdate
     private $version;
 
     /**
-     * @ORM\Column(type="integer", name="price_asked", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, name="price_asked", nullable=true)
      */
     private $priceAsked;
 
     /**
-     * @ORM\Column(type="integer", name="price_paid", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, name="price_paid", nullable=true)
      */
     private $pricePaid;
 
     /**
-     * @ORM\Column(type="integer", name="price_resale", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, name="price_resale", nullable=true)
      */
     private $priceResale;
 
     /**
-     * @ORM\Column(type="integer", name="price_sold", nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2, name="price_sold", nullable=true)
      */
     private $priceSold;
 
