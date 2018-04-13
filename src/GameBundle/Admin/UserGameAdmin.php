@@ -20,8 +20,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('game')
             ->add('platform')
             ->add('rating')
-            ->add('box')
-            ->add('manual')
+            ->add('state')
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')
@@ -30,6 +29,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('purchaseDate')
             ->add('saleDate')
             ->add('progress')
+            ->add('cond')
             ->add('note')
             ->add('updatedAt')
             ->add('createdAt');
@@ -45,8 +45,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('game')
             ->add('platform')
             ->add('rating')
-            ->add('box')
-            ->add('manual')
+            ->add('state')
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')
@@ -55,6 +54,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('purchaseDate')
             ->add('saleDate')
             ->add('progress')
+            ->add('cond')
             ->add('note')
             ->add('_action', null, array(
                 'actions' => array(
@@ -75,8 +75,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('game')
             ->add('platform')
             ->add('rating')
-            ->add('box')
-            ->add('manual')
+            ->add('state')
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')
@@ -85,6 +84,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('purchaseDate')
             ->add('saleDate')
             ->add('progress')
+            ->add('cond')
             ->add('note');
     }
 
@@ -98,8 +98,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('game')
             ->add('platform')
             ->add('rating')
-            ->add('box')
-            ->add('manual')
+            ->add('state')
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')
@@ -112,6 +111,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('saleContact')
             ->add('salePlace')
             ->add('progress')
+            ->add('cond')
             ->add('note')
             ->add('updatedAt')
             ->add('createdAt');

@@ -92,8 +92,34 @@ class UserGame extends BaseCreateUpdate
     /**
      * @ORM\Column(type="smallint")
      * @Assert\Range(min = 0, max = 3)
+     * 0 : never played
+     * 1 : playing
+     * 2 : over
+     * 3 : abandoned
      */
     private $progress = 0;
+
+    /**
+     * @ORM\Column(type="smallint")
+     * @Assert\Range(min = 0, max = 4)
+     * 0 : bad
+     * 1 : good
+     * 2 : very good
+     * 3 : near mint
+     * 4 : mint
+     */
+    private $cond = 2;
+
+    /**
+     * @ORM\Column(type="smallint")
+     * @Assert\Range(min = 0, max = 4)
+     * 0 : loose
+     * 1 : no manual
+     * 2 : no box
+     * 3 : CIB
+     * 4 : dematerialized
+     */
+    private $state = 3;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -400,6 +426,54 @@ class UserGame extends BaseCreateUpdate
     public function setProgress($progress)
     {
         $this->progress = $progress;
+
+        return $this;
+    }
+
+    /**
+     * Get cond
+     *
+     * @return integer
+     */
+    public function getCond()
+    {
+        return $this->cond;
+    }
+
+    /**
+     * Set cond
+     *
+     * @param integer $cond
+     *
+     * @return UserGame
+     */
+    public function setCond($cond)
+    {
+        $this->cond = $cond;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return integer
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set cond
+     *
+     * @param integer $state
+     *
+     * @return UserGame
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
 
         return $this;
     }

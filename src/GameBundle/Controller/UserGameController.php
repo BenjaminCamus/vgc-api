@@ -351,10 +351,9 @@ class UserGameController extends FOSRestController
                 $userGame->$method(${$type . 'Place'});
 
                 // Date
-                if (isset($requestValues[$type . 'Date'])) {
-                    $method = 'set' . ucfirst($type) . 'Date';
-                    $userGame->$method(new \DateTime());
-                }
+                $date = is_null($requestValues[$type . 'Date']) ? null : new \DateTime($requestValues[$type . 'Date']);
+                $method = 'set' . ucfirst($type) . 'Date';
+                $userGame->$method($date);
             }
 
             $userGame->setUser($this->getUser());
@@ -366,8 +365,7 @@ class UserGameController extends FOSRestController
             }
 
             $userGame->setRating($request->request->get('rating'));
-            $userGame->setBox($request->request->get('box'));
-            $userGame->setManual($request->request->get('manual'));
+            $userGame->setState($request->request->get('state'));
             $userGame->setVersion($request->request->get('version'));
 
             $userGame->setPriceAsked($request->request->get('priceAsked'));
@@ -375,11 +373,8 @@ class UserGameController extends FOSRestController
             $userGame->setPriceResale($request->request->get('priceResale'));
             $userGame->setPriceSold($request->request->get('priceSold'));
 
-            $userGame->setPurchaseDate(new \DateTime($request->request->get('purchaseDate')));
-            $saleDate = is_null($request->request->get('saleDate')) ? null : new \DateTime($request->request->get('saleDate'));
-            $userGame->setSaleDate($saleDate);
-
             $userGame->setProgress($request->request->get('progress'));
+            $userGame->setCond($request->request->get('cond'));
 
             $userGame->setNote($request->request->get('note'));
 

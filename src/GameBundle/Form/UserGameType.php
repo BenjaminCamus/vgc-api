@@ -19,8 +19,10 @@ class UserGameType extends AbstractType
             ->add('platform')
             ->add('releaseDate')
             ->add('rating')
+            /* TODO: delete box and manual */
             ->add('box')
             ->add('manual')
+            ->add('state')
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')
@@ -35,6 +37,7 @@ class UserGameType extends AbstractType
                 'input' => 'datetime'
             ))
             ->add('progress')
+            ->add('cond')
             ->add('note')
             ->add('purchaseContact')
             ->add('saleContact')
