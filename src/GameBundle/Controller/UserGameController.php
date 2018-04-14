@@ -365,7 +365,7 @@ class UserGameController extends FOSRestController
             }
 
             $userGame->setRating($request->request->get('rating'));
-            $userGame->setState($request->request->get('state'));
+            $userGame->setCompleteness($request->request->get('completeness'));
             $userGame->setVersion($request->request->get('version'));
 
             $userGame->setPriceAsked($request->request->get('priceAsked'));

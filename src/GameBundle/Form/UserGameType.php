@@ -22,7 +22,7 @@ class UserGameType extends AbstractType
             /* TODO: delete box and manual */
             ->add('box')
             ->add('manual')
-            ->add('state')
+            ->add('completeness')
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')

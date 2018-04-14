@@ -119,7 +119,7 @@ class UserGame extends BaseCreateUpdate
      * 3 : CIB
      * 4 : dematerialized
      */
-    private $state = 3;
+    private $completeness = 3;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -455,25 +455,25 @@ class UserGame extends BaseCreateUpdate
     }
 
     /**
-     * Get state
+     * Get completeness
      *
      * @return integer
      */
-    public function getState()
+    public function getCompleteness()
     {
-        return $this->state;
+        return $this->completeness;
     }
 
     /**
      * Set cond
      *
-     * @param integer $state
+     * @param integer $completeness
      *
      * @return UserGame
      */
-    public function setState($state)
+    public function setCompleteness($completeness)
     {
-        $this->state = $state;
+        $this->completeness = $completeness;
 
         return $this;
     }
