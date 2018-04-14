@@ -1,19 +1,19 @@
 # vgc-api
-Video Game Collector API with Symfony
+Video Game Collector API with Symfony 3.0 (NEEDS TO BE UPDATED)
 
 This is an API that allows you to manage your collection of video games.  
 Video games data are provided by [IGDB API](https://www.igdb.com/api).  
-An Angular client for this API can be found here: [vgc-client](https://github.com/BenjaminCamus/vgc-client)
+An Angular 2 client for this API can be found here: [vgc-client](https://github.com/BenjaminCamus/vgc-client)
 
 ## Installation
 
 ##### Get Source Code
 ```
-git clone git@github.com:BenjaminCamus/vgc-api.git
+git clone https://github.com/BenjaminCamus/vgc-api.git
 cd vgc-api
 ```
 
-##### Install Vendors
+##### Install Vendors & Edit Parameters
 ```
 composer install
 ```
@@ -24,21 +24,15 @@ openssl genrsa -out var/jwt/private.pem -aes256 4096
 openssl rsa -pubout -in var/jwt/private.pem -out var/jwt/public.pem
 ```
 
-
-##### Edit Parameters
-```
-cp app/config/parameters.dist.yml app/config/parameters.yml
-```
-
 ##### Create Database
 ```
-php app/console doctrine:database:create
-php app/console doctrine:database:update --force
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:update --force
 ```
 
 ##### Create Super Admin User
 ```
-php bin/console fos:user:create adminUser admin@user.com adminPassword --superAdmin
+php bin/console fos:user:create adminUser admin@user.com adminPassword --super-admin
 ```
 
 ##### Clear Cache
@@ -50,7 +44,7 @@ php bin/console cache:clear --env=prod
 ##### Nginx
 ```
 server {
-    server_name api.vgc.test;
+    server_name api.vgc.local admin.vgc.local;
     root /var/www/vgc-api/web;
 
     location / {

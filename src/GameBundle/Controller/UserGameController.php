@@ -192,8 +192,8 @@ class UserGameController extends FOSRestController
                     }
                 }
 
-                // @TODO: cover + screenshots(ajouter images si absentes, recherche avec url)
-                // @TODO: rendre image->url unique
+                // TODO: cover + screenshots(ajouter images si absentes, recherche avec url)
+                // TODO: rendre image->url unique
                 // Save cover Image
                 $cover = new Image();
                 $cover->setUrl($igdbGame->cover->url);
