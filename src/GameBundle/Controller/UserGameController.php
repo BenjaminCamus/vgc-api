@@ -30,15 +30,18 @@ class UserGameController extends FOSRestController
      * @Rest\View
      * @Rest\Get("/user/games")
      */
-    public function getUserGamesAction()
+    public function getUserGamesAction(Request $request)
     {
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-
-        $limit = $this->container->getParameter('kernel.environment') === 'dev' ? 10 : null;
+        $offset = $request->query->get('offset', 0);
+        $offset = $offset < 0 ? 0 : $offset;
+        $limit = $request->query->get('limit', 10);
+        $limit = $limit < 0 ? 0 : $limit;
+        $limit = $limit > 100 ? 100 : $limit;
 
         $userGames = $userGameRepository->findBy([
             'user' => $this->getUser()
-        ], [], $limit);
+        ], [], $limit, $offset);
 
         return $userGames;
     }
