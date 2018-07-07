@@ -53,6 +53,11 @@ security:
             pattern:   ^/api_register
             anonymous: true
 
+        profiler:
+            host: '%game_api_host%'
+            pattern:   ^/_profiler
+            anonymous: true
+
         api:
             host: '%game_api_host%'
             pattern:   ^/
@@ -77,5 +82,6 @@ security:
         - { host: '%admin_host%', path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { host: '%admin_host%', path: ^/, role: ROLE_ADMIN }
         - { host: '%game_api_host%', path: ^/api_register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: '%game_api_host%', path: ^/_profiler, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { host: '%game_api_host%', role: ROLE_USER }
 
