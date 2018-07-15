@@ -48,6 +48,16 @@ class UserGameController extends FOSRestController
 
     /**
      * @Rest\View
+     * @Rest\Get("/user/games/count")
+     */
+    public function getCountUserGamesAction(Request $request)
+    {
+        $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
+        return $userGameRepository->countByUser($this->getUser());
+    }
+
+    /**
+     * @Rest\View
      * @Rest\Get("/user/games/{platformSlug}/{gameSlug}", requirements={"platformSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$", "gameSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$"})
      */
     public function getGameAction($platformSlug, $gameSlug)

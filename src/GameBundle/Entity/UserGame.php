@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="user_game")
+ * @ORM\Entity(repositoryClass="GameBundle\Repository\UserGameRepository")
  */
 class UserGame extends BaseCreateUpdate
 {
