@@ -14,8 +14,8 @@ class IGDB
 
     public function get($path)
     {
-
-        $response = Unirest\Request::get('https://api-2445582011268.apicast.io/' . $path,
+        //Unirest\Request::verifyPeer(false);
+        $response = Unirest\Request::get('https://api-endpoint.igdb.com/' . $path,
             array(
                 'user-key' => $this->igdbKey,
                 'Accept' => 'application/json'
