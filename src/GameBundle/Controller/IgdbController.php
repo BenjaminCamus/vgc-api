@@ -59,33 +59,31 @@ class IgdbController extends FOSRestController
 
                     if (is_null($platform)) {
 
-                        // Platform not in db : new Platform
-                        $platform = new Platform();
-                        $platform->setIgdbId($platformId);
-
-                        // Get IGDB game
+                        // Get IGDB platform
                         $igdbPlatforms = $igdbService->get('platforms/' . $platform->getIgdbId() . '?fields=*');
                         $igdbPlatform = $igdbPlatforms[0];
 
-                        $igdbGamePlatforms[] = $igdbPlatform;
-
+                        // Platform not in db : new Platform
+                        $platform = new Platform();
+                        $platform->setIgdbId($platformId);
                         $platform->setName($igdbPlatform->name);
                         $platform->setIgdbUrl($igdbPlatform->url);
 
                         $em->persist($platform);
                         $em->flush();
-                    } else {
-                        $igdbPlatform = new \stdClass();
-                        $igdbPlatform->id = $platform->getIgdbId();
-                        $igdbPlatform->name = $platform->getName();
-
-                        $igdbGamePlatforms[] = $igdbPlatform;
                     }
+
+                    $igdbPlatform = new \stdClass();
+                    $igdbPlatform->id = $platform->getIgdbId();
+                    $igdbPlatform->slug = $platform->getSlug();
+                    $igdbPlatform->name = $platform->getName();
+
+                    $igdbGamePlatforms[] = $igdbPlatform;
+                    $platforms[$platformId] = $igdbPlatform;
                 }
             }
 
             $igdbGame->platforms = $igdbGamePlatforms;
-
             $returnGames[] = $igdbGame;
         }
 
@@ -103,6 +101,4 @@ class IgdbController extends FOSRestController
 
         return new JsonResponse($igdb);
     }
-
-    //'platforms/' + platformId + '?fields=id,name,slug'
 }

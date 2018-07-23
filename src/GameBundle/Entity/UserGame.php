@@ -14,20 +14,24 @@ class UserGame extends BaseCreateUpdate
 {
     /**
      * @ORM\Id
+     * @ORM\Column(name="id", type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
+     */
+    protected $id;
+
+    /**
      * @ORM\ManyToOne(targetEntity="\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      **/
     private $user;
 
     /**
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Game")
      * @ORM\JoinColumn(name="game_id", referencedColumnName="id", onDelete="CASCADE")
      **/
     private $game;
 
     /**
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Platform")
      * @ORM\JoinColumn(name="platform_id", referencedColumnName="id")
      **/
@@ -144,12 +148,21 @@ class UserGame extends BaseCreateUpdate
      * @ORM\JoinColumn(name="purchase_contact_id", referencedColumnName="id")
      **/
     private $purchaseContact;
-
     /**
      * @ORM\ManyToOne(targetEntity="Contact")
      * @ORM\JoinColumn(name="sale_contact_id", referencedColumnName="id")
      **/
     private $saleContact;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Get rating
