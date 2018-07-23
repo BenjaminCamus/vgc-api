@@ -52,7 +52,7 @@ class RegisterController extends FOSRestController implements ClassResourceInter
         }
         $event = new FormEvent($form, $request);
         $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
-        if ($event->getResponse()) {
+        if ($event->getResponse() && strpos($event->getResponse()->getTargetUrl(), '/register/check-email') === false) {
             return $event->getResponse();
         }
         $userManager->updateUser($user);

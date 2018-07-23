@@ -110,10 +110,8 @@ stof_doctrine_extensions:
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
-    host:      "%mailer_host%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
-    spool:     { type: memory }
 
 # FOS User
 fos_user:
@@ -121,6 +119,9 @@ fos_user:
     firewall_name: main
     user_class: UserBundle\Entity\User
     from_email: "%fos_user_from_email%"
+    registration:
+        confirmation:
+            enabled: true
 
 # FOS Rest
 fos_rest:
