@@ -128,22 +128,16 @@ class UserGameController extends FOSRestController
         $platform = $platformRepository->findOneByIgdbId($requestValues['platform']['igdbId']);
         $formValues['platform'] = is_null($platform) ? null : $platform->getId();
 
-        // Contacts / Places
+        // Contacts
         $contactRepository = $this->getDoctrine()->getRepository('GameBundle:Contact');
-        $placeRepository = $this->getDoctrine()->getRepository('GameBundle:Place');
 
         foreach (['purchase', 'sale'] as $type) {
 
             $formValues[$type . 'Contact'] = ${$type . 'Contact'} = null;
-            $formValues[$type . 'Place'] = ${$type . 'Place'} = null;
 
             if (isset($requestValues[$type . 'Contact'])) {
                 ${$type . 'Contact'} = $contactRepository->find($requestValues[$type . 'Contact']['id']);
                 $formValues[$type . 'Contact'] = is_null(${$type . 'Contact'}) ? null : ${$type . 'Contact'}->getId();
-            }
-            if (isset($requestValues[$type . 'Place'])) {
-                ${$type . 'Place'} = $placeRepository->find($requestValues[$type . 'Place']['id']);
-                $formValues[$type . 'Place'] = is_null(${$type . 'Place'}) ? null : ${$type . 'Place'}->getId();
             }
         }
 
@@ -350,7 +344,7 @@ class UserGameController extends FOSRestController
                 $userGame->$method(${$type . 'Contact'});
 
                 $method = 'set' . ucfirst($type) . 'Place';
-                $userGame->$method(${$type . 'Place'});
+                $userGame->$method($requestValues[$type . 'Place']);
 
                 // Date
                 $date = is_null($requestValues[$type . 'Date']) ? null : new \DateTime($requestValues[$type . 'Date']);

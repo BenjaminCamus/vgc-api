@@ -132,15 +132,13 @@ class UserGame extends BaseCreateUpdate
     private $note;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Place")
-     * @ORM\JoinColumn(name="purchase_place_id", referencedColumnName="id")
-     **/
+     * @ORM\Column(name="purchase_place")
+     */
     private $purchasePlace;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Place")
-     * @ORM\JoinColumn(name="sale_place_id", referencedColumnName="id")
-     **/
+     * @ORM\Column(name="sale_place")
+     */
     private $salePlace;
 
     /**
@@ -615,7 +613,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Get purchasePlace
      *
-     * @return \GameBundle\Entity\Place
+     * @return string
      */
     public function getPurchasePlace()
     {
@@ -625,11 +623,11 @@ class UserGame extends BaseCreateUpdate
     /**
      * Set purchasePlace
      *
-     * @param Place $purchasePlace
+     * @param string
      *
      * @return UserGame
      */
-    public function setPurchasePlace(Place $purchasePlace = null)
+    public function setPurchasePlace($purchasePlace)
     {
         $this->purchasePlace = $purchasePlace;
 
@@ -639,7 +637,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Get salePlace
      *
-     * @return Place
+     * @return string
      */
     public function getSalePlace()
     {
@@ -649,11 +647,11 @@ class UserGame extends BaseCreateUpdate
     /**
      * Set salePlace
      *
-     * @param Place $salePlace
+     * @param string
      *
      * @return UserGame
      */
-    public function setSalePlace(Place $salePlace = null)
+    public function setSalePlace($salePlace)
     {
         $this->salePlace = $salePlace;
 

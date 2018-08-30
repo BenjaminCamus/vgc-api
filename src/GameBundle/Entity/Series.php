@@ -63,7 +63,7 @@ class Series extends BaseCreateUpdate
      *
      * @param string $name
      *
-     * @return Place
+     * @return Series
      */
     public function setName($name)
     {
@@ -87,7 +87,7 @@ class Series extends BaseCreateUpdate
      *
      * @param string $slug
      *
-     * @return Place
+     * @return Series
      */
     public function setSlug($slug)
     {
