@@ -132,12 +132,12 @@ class UserGame extends BaseCreateUpdate
     private $note;
 
     /**
-     * @ORM\Column(name="purchase_place")
+     * @ORM\Column(name="purchase_place", nullable=true)
      */
     private $purchasePlace;
 
     /**
-     * @ORM\Column(name="sale_place")
+     * @ORM\Column(name="sale_place", nullable=true)
      */
     private $salePlace;
 

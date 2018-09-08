@@ -343,13 +343,18 @@ class UserGameController extends FOSRestController
                 $method = 'set' . ucfirst($type) . 'Contact';
                 $userGame->$method(${$type . 'Contact'});
 
-                $method = 'set' . ucfirst($type) . 'Place';
-                $userGame->$method($requestValues[$type . 'Place']);
+                // Place
+                if (isset($requestValues[$type . 'Place'])) {
+                    $method = 'set' . ucfirst($type) . 'Place';
+                    $userGame->$method($requestValues[$type . 'Place']);
+                }
 
                 // Date
-                $date = is_null($requestValues[$type . 'Date']) ? null : new \DateTime($requestValues[$type . 'Date']);
-                $method = 'set' . ucfirst($type) . 'Date';
-                $userGame->$method($date);
+                if (isset($requestValues[$type . 'Date'])) {
+                    $date = is_null($requestValues[$type . 'Date']) ? null : new \DateTime($requestValues[$type . 'Date']);
+                    $method = 'set' . ucfirst($type) . 'Date';
+                    $userGame->$method($date);
+                }
             }
 
             $userGame->setUser($this->getUser());
