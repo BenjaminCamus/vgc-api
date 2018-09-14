@@ -58,21 +58,15 @@ class UserGameController extends FOSRestController
 
     /**
      * @Rest\View
-     * @Rest\Get("/user/games/{platformSlug}/{gameSlug}", requirements={"platformSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$", "gameSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$"})
+     * @Rest\Get("/user/games/{userGameId}", requirements={"userGameId" = "^[a-z0-9]+(?:-[a-z0-9]+)*$"})
      */
-    public function getGameAction($platformSlug, $gameSlug)
+    public function getGameAction($userGameId)
     {
-        $platformRepository = $this->getDoctrine()->getRepository('GameBundle:Platform');
-        $platform = $platformRepository->findOneBySlug($platformSlug);
-
-        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
-        $game = $gameRepository->findOneBySlug($gameSlug);
 
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
         $userGame = $userGameRepository->findOneBy([
             'user' => $this->getUser(),
-            'platform' => $platform,
-            'game' => $game
+            'id' => $userGameId
         ]);
 
         if (is_null($userGame)) {
@@ -84,21 +78,14 @@ class UserGameController extends FOSRestController
 
     /**
      * @Rest\View
-     * @Rest\Delete("/user/games/{platformSlug}/{gameSlug}", requirements={"platformSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$", "gameSlug" = "^[a-z0-9]+(?:-[a-z0-9]+)*$"})
+     * @Rest\Delete("/user/games/{userGameId}", requirements={"userGameId" = "^[a-z0-9]+(?:-[a-z0-9]+)*$"})
      */
-    public function deleteGameAction($platformSlug, $gameSlug)
+    public function deleteGameAction($userGameId)
     {
-        $platformRepository = $this->getDoctrine()->getRepository('GameBundle:Platform');
-        $platform = $platformRepository->findOneBySlug($platformSlug);
-
-        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
-        $game = $gameRepository->findOneBySlug($gameSlug);
-
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
         $userGame = $userGameRepository->findOneBy([
             'user' => $this->getUser(),
-            'platform' => $platform,
-            'game' => $game
+            'id' => $userGameId
         ]);
 
         $em = $this->getDoctrine()->getManager();
@@ -119,6 +106,9 @@ class UserGameController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $igdbService = $this->container->get('igdb');
 
+        // Id
+        unset($formValues['id']);
+
         // User
         $formValues['user'] = $this->getUser()->getId();
 
@@ -138,22 +128,16 @@ class UserGameController extends FOSRestController
         $platform = $platformRepository->findOneByIgdbId($requestValues['platform']['igdbId']);
         $formValues['platform'] = is_null($platform) ? null : $platform->getId();
 
-        // Contacts / Places
+        // Contacts
         $contactRepository = $this->getDoctrine()->getRepository('GameBundle:Contact');
-        $placeRepository = $this->getDoctrine()->getRepository('GameBundle:Place');
 
         foreach (['purchase', 'sale'] as $type) {
 
             $formValues[$type . 'Contact'] = ${$type . 'Contact'} = null;
-            $formValues[$type . 'Place'] = ${$type . 'Place'} = null;
 
             if (isset($requestValues[$type . 'Contact'])) {
                 ${$type . 'Contact'} = $contactRepository->find($requestValues[$type . 'Contact']['id']);
                 $formValues[$type . 'Contact'] = is_null(${$type . 'Contact'}) ? null : ${$type . 'Contact'}->getId();
-            }
-            if (isset($requestValues[$type . 'Place'])) {
-                ${$type . 'Place'} = $placeRepository->find($requestValues[$type . 'Place']['id']);
-                $formValues[$type . 'Place'] = is_null(${$type . 'Place'}) ? null : ${$type . 'Place'}->getId();
             }
         }
 
@@ -320,8 +304,7 @@ class UserGameController extends FOSRestController
             $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
             $userGameCheck = $userGameRepository->findBy([
                 'user' => $this->getUser(),
-                'game' => $game,
-                'platform' => $platform
+                'id' => $requestValues['id']
             ]);
 
             $userGame = (count($userGameCheck) == 0) ? new UserGame() : $userGameCheck[0];
@@ -360,13 +343,18 @@ class UserGameController extends FOSRestController
                 $method = 'set' . ucfirst($type) . 'Contact';
                 $userGame->$method(${$type . 'Contact'});
 
-                $method = 'set' . ucfirst($type) . 'Place';
-                $userGame->$method(${$type . 'Place'});
+                // Place
+                if (isset($requestValues[$type . 'Place'])) {
+                    $method = 'set' . ucfirst($type) . 'Place';
+                    $userGame->$method($requestValues[$type . 'Place']);
+                }
 
                 // Date
-                $date = is_null($requestValues[$type . 'Date']) ? null : new \DateTime($requestValues[$type . 'Date']);
-                $method = 'set' . ucfirst($type) . 'Date';
-                $userGame->$method($date);
+                if (isset($requestValues[$type . 'Date'])) {
+                    $date = is_null($requestValues[$type . 'Date']) ? null : new \DateTime($requestValues[$type . 'Date']);
+                    $method = 'set' . ucfirst($type) . 'Date';
+                    $userGame->$method($date);
+                }
             }
 
             $userGame->setUser($this->getUser());
