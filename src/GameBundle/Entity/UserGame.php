@@ -117,12 +117,13 @@ class UserGame extends BaseCreateUpdate
 
     /**
      * @ORM\Column(type="smallint")
-     * @Assert\Range(min = 0, max = 4)
+     * @Assert\Range(min = 0, max = 5)
      * 0 : loose
      * 1 : no manual
      * 2 : no box
      * 3 : CIB
      * 4 : dematerialized
+     * 5 : new
      */
     private $completeness = 3;
 
