@@ -16,6 +16,7 @@ use GameBundle\Entity\Contact;
 use GameBundle\Entity\Game;
 use GameBundle\Entity\Image;
 use GameBundle\Entity\Platform;
+use GameBundle\Entity\Series;
 use GameBundle\Entity\UserGame;
 use GameBundle\Form\ContactType;
 use GameBundle\Form\UserGameType;
@@ -384,6 +385,97 @@ class UserGameController extends FOSRestController
             return $userGame;
         } else {
             return $form;
+        }
+    }
+
+    /**
+     * @Rest\View
+     * @Rest\Get("/series/csv")
+     */
+    public function seriesCsvAction(Request $request)
+    {
+        if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            throw new HttpException(403, "Admin only");
+        }
+
+        $csvFile = $this->container->get('kernel')->getRootDir() . '/../var/csv/VGC_Series.csv';
+        $row = 0;
+        if (($handle = fopen($csvFile, 'r')) !== FALSE) {
+
+
+            // Manager / Repositories
+            $em = $this->getDoctrine()->getManager();
+            $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+            $seriesRepository = $this->getDoctrine()->getRepository('GameBundle:Series');
+
+            // Boucle sur les lignes du CSV
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+
+                if ($row > 1) {
+
+                    // Nom du jeu
+                    $name = $data[0];
+
+                    // Noms des séries
+                    $num = count($data) - 1;
+                    $seriesNames = [];
+                    for ($c = 1; $c < $num; $c++) {
+
+                        if ($data[$c] != '') {
+
+                            $seriesNames[] = $data[$c];
+                        }
+                    }
+
+                    if (count($seriesNames) > 0) {
+
+                        // Jeu
+                        $game = $gameRepository->findOneBy([
+                            'name' => $name
+                        ]);
+
+                        // Jeu introuvable : 404
+                        if (is_null($game)) {
+                            continue;
+//                            throw new HttpException(404, "Game Not Found");
+                        } else {
+
+                            // Boucle sur les noms des séries
+
+                            foreach ($game->getSeries() as $gameSeries) {
+                                $game->removeSeries($gameSeries);
+                            }
+
+                            foreach ($seriesNames as $seriesName) {
+
+                                // Série
+                                $series = $seriesRepository->findOneBy([
+                                    'name' => $seriesName
+                                ]);
+
+                                // Série introuvable : ajout
+                                if (is_null($series)) {
+
+                                    $series = new Series();
+                                    $series->setName($seriesName);
+                                    $em->persist($series);
+                                    $em->flush();
+                                }
+
+                                $game->addSeries($series);
+                            }
+
+                            // Sauvegarde du jeu
+                            $em->persist($game);
+                            $em->flush();
+                        }
+                    }
+                }
+
+                $row++;
+            }
+
+            fclose($handle);
         }
     }
 }
