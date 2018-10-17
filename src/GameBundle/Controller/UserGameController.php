@@ -394,7 +394,7 @@ class UserGameController extends FOSRestController
      */
     public function seriesCsvAction(Request $request)
     {
-        if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
             throw new HttpException(403, "Admin only");
         }
 
@@ -437,7 +437,6 @@ class UserGameController extends FOSRestController
                         // Jeu introuvable : 404
                         if (is_null($game)) {
                             continue;
-//                            throw new HttpException(404, "Game Not Found");
                         } else {
 
                             // Boucle sur les noms des séries
