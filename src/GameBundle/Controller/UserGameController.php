@@ -19,7 +19,6 @@ use GameBundle\Entity\Platform;
 use GameBundle\Entity\UserGame;
 use GameBundle\Form\ContactType;
 use GameBundle\Form\UserGameType;
-use GameBundle\Utils\IGDB;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
