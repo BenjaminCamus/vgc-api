@@ -122,6 +122,7 @@ fos_user:
     registration:
         confirmation:
             enabled: true
+            template:   email/registration.email.twig
 
 # FOS Rest
 fos_rest:

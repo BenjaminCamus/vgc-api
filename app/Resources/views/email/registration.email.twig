@@ -1,0 +1,15 @@
+{% block subject %}
+    {%- autoescape false -%}
+        Bienvenue {{ user.username }} !
+    {%- endautoescape -%}
+{% endblock %}
+
+{% block body_text %}
+    {% autoescape false %}
+        Bienvenue {{ user.username }} !
+
+        Merci de cliquer sur ce lien pour valider votre adresse e-mail : http://192.168.1.20:4200/register/confirm/{{ confirmationUrl | split('/') | last }}
+
+        VGC Team
+    {% endautoescape %}
+{% endblock %}
