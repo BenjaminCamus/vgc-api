@@ -398,6 +398,8 @@ class UserGameController extends FOSRestController
             throw new HttpException(403, "Admin only");
         }
 
+        ini_set('max_execution_time', 0);
+
         $csvFile = $this->container->get('kernel')->getRootDir() . '/../var/csv/VGC_Series.csv';
         $row = 0;
         if (($handle = fopen($csvFile, 'r')) !== FALSE) {
