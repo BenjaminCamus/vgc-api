@@ -13,6 +13,28 @@ use UserBundle\Entity\User;
  */
 class GameRepository extends EntityRepository
 {
+    public function count()
+    {
+        return
+            (int)
+            $this->createQueryBuilder('g')
+                ->select('count(g.id)')
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
+
+    public function countByIgdbUpdate($igdbUpdate)
+    {
+        return
+            (int)
+            $this->createQueryBuilder('g')
+                ->select('count(g.id)')
+                ->where('g.igdbUpdate = :igdbUpdate')
+                ->setParameter('igdbUpdate', $igdbUpdate)
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
+
     public function findUserGameByIgdbId(User $user, $igdbId)
     {
         return $this->getEntityManager()

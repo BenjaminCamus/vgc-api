@@ -23,6 +23,11 @@ class Game extends BaseObject
     private $ratingCount;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $igdbUpdate;
+
+    /**
      * @ORM\Column(type="datetime", name="igdb_created_at")
      */
     private $igdbCreatedAt;
@@ -46,6 +51,15 @@ class Game extends BaseObject
      *      )
      */
     private $screenshots;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Video")
+     * @ORM\JoinTable(name="games__videos",
+     *      joinColumns={@ORM\JoinColumn(name="game_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="video_id", referencedColumnName="id", unique=true)}
+     *      )
+     */
+    private $videos;
 
     /**
      * @ORM\ManyToMany(targetEntity="Series")
@@ -150,6 +164,29 @@ class Game extends BaseObject
     {
         $this->ratingCount = $ratingCount;
 
+        return $this;
+    }
+
+    /**
+     * Get igdbUpdatedAt
+     *
+     * @return \DateTime
+     */
+    public function getIgdbUpdate()
+    {
+        return $this->igdbUpdate;
+    }
+
+    /**
+     * Set igdbUpdate
+     *
+     * @param \DateTime $igdbUpdate
+     *
+     * @return Game
+     */
+    public function setIgdbUpdate($igdbUpdate)
+    {
+        $this->igdbUpdate = $igdbUpdate;
         return $this;
     }
 
@@ -270,6 +307,52 @@ class Game extends BaseObject
     {
         $this->screenshots = $screenshots;
 
+        return $this;
+    }
+
+    /**
+     * Add video
+     *
+     * @param Video $video
+     *
+     * @return Game
+     */
+    public function addVideo(Video $video)
+    {
+        $this->videos[] = $video;
+        return $this;
+    }
+
+    /**
+     * Remove video
+     *
+     * @param Video $video
+     */
+    public function removeVideo(Video $video)
+    {
+        $this->videos->removeElement($video);
+    }
+
+    /**
+     * Get videos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVideos()
+    {
+        return $this->videos;
+    }
+
+    /**
+     * Set videos
+     *
+     * @param \Doctrine\Common\Collections\Collection $videos
+     *
+     * @return Game
+     */
+    public function setVideos($videos)
+    {
+        $this->videos = $videos;
         return $this;
     }
 

@@ -43,6 +43,12 @@ class IgdbController extends FOSRestController
                 }
             }
 
+            if (isset($igdbGame->videos) && count($igdbGame->videos) > 0) {
+                foreach ($igdbGame->videos as $video) {
+                    $video->youtubeId = $video->video_id;
+                }
+            }
+
             $igdbGamePlatforms = [];
 
             foreach ($igdbGame->platforms as $platformId) {

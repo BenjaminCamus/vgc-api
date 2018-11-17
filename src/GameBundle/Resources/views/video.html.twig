@@ -1,0 +1,4 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+{% block field %}
+    <a target="_blank" href="https://www.youtube.com/watch?v={{ object.youtubeId }}">{{ object.name }}</a>
+{% endblock %}
