@@ -1,0 +1,56 @@
+version: '3'
+services:
+  nginx:
+    build: docker/nginx
+    image: ${APP_NAME}_nginx
+    container_name: ${APP_NAME}_nginx
+#    restart: always # Always restart container
+    volumes:
+      - ./docker/nginx/${APP_NAME}.conf:/etc/nginx/conf.d/${APP_NAME}.conf
+      - ./:/www
+    depends_on:
+      - php
+    environment:
+      - VIRTUAL_HOST=${API_HOST},${ADMIN_HOST} # Enviroment variable needed for nginx proxy
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=${API_HOST},${ADMIN_HOST} # Enviroment variables needed for Let's Encrypt companion
+      - LETSENCRYPT_EMAIL=${SUPER_ADMIN_EMAIL}
+    expose:
+      - 80 # Expose http port
+      - 443 # along with https port
+    networks:
+      - nginx-proxy # Connect this container to network named nginx-proxy, that will be described below
+
+  php:
+    build: docker/php
+    image: ${APP_NAME}_php
+    container_name: ${APP_NAME}_php
+    volumes:
+      - ./:/www
+    links:
+      - mysql
+    networks:
+      - nginx-proxy # Connect this container to network named nginx-proxy, that will be described below
+
+  mysql:
+    image: mysql:5.7
+    container_name: ${APP_NAME}_mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - nginx-proxy # Connect this container to network named nginx-proxy, that will be described below
+
+networks:
+  nginx-proxy:
+    external:
+      name: nginxproxy_nginx-proxy # Reference our network that was created by Docker Compose when we launched our two main containers earlier. Name generated automaticaly. Use `docker network ls` to list all networks and their names.
+
+volumes:
+  mysql-volume:
