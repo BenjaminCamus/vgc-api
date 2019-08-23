@@ -4,7 +4,7 @@ export
 install:
 	docker exec -it ${APP_NAME}_php bash /sh/install.sh -p ${JWT_PASSPHRASE} -sau ${SUPER_ADMIN_USERNAME} -sae ${SUPER_ADMIN_EMAIL} -sap ${SUPER_ADMIN_PASSWORD}
 
-start: docker-stop
+start: stop
 	docker-compose -f docker-compose.yml up -d
 
 watch:
