@@ -50,7 +50,7 @@ services:
 networks:
   nginx-proxy:
     external:
-      name: nginxproxy_nginx-proxy # Reference our network that was created by Docker Compose when we launched our two main containers earlier. Name generated automaticaly. Use `docker network ls` to list all networks and their names.
+      name: ngninx-proxy-network # Reference our network that was created by Docker Compose when we launched our two main containers earlier. Name generated automaticaly. Use `docker network ls` to list all networks and their names.
 
 volumes:
   mysql-volume:

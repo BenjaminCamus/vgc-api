@@ -71,7 +71,7 @@ echo_step "cache clear"
 bin/console cache:clear --env=dev
 bin/console cache:clear --env=prod
 
-echo_step "chown www-data /www"
-chown -R www-data:www-data /www
-chmod -R g+w /www
+echo_step "chown www-data /www/var"
+chown -R www-data:www-data /www/var
+chmod -R g+w /www/var
 chmod +x bin/console
