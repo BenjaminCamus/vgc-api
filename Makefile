@@ -24,3 +24,6 @@ bash-nginx:
 
 mysql:
 	docker exec -it ${APP_NAME}_mysql mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE}
+
+admin:
+	xdg-open http://${ADMIN_HOST}
