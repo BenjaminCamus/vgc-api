@@ -4,13 +4,13 @@ export
 install:
 	docker exec -it ${APP_NAME}_php bash /sh/install.sh -p ${JWT_PASSPHRASE} -sau ${SUPER_ADMIN_USERNAME} -sae ${SUPER_ADMIN_EMAIL} -sap ${SUPER_ADMIN_PASSWORD}
 
-docker-start: docker-stop
+start: docker-stop
 	docker-compose -f docker-compose.yml up -d
 
-docker-watch:
+watch:
 	docker-compose -f docker-compose.yml up
 
-docker-stop:
+stop:
 	docker-compose -f docker-compose.yml stop
 
 bash:
@@ -22,5 +22,5 @@ bash-root:
 bash-nginx:
 	docker exec -it ${APP_NAME}_nginx bash
 
-bash-mysql:
-	docker exec -it ${APP_NAME}_mysql mysql -umysql -ppassword ${APP_NAME}
+mysql:
+	docker exec -it ${APP_NAME}_mysql mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE}
