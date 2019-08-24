@@ -1,0 +1,19 @@
+     _n_________________
+    |_|_______________|_|
+    |  ,-------------.  |
+    | |  .---------.  | |
+    | |  |         |  | |    CVG    VGC              CVGCVGCV
+    | |  |         |  | |    CVG    VGC  GCVGCVGCV  VGCVGCVGC
+    | |  |   VGC   |  | |    CVG    VGC VGCVGCVGCV  VGCVGCVGC
+    | |  |         |  | |    CVG    VGC VGC    GCV  VGC   VGC
+    | |  `---------'  | |    CVG    VGC VGC    GCV  VGC   VGC
+    | `---------------' |    CVG    VGC VGC         VGC   VGC
+    |   _               |    CVG    VGC VGC  CVGCV  VGC
+    | _| |_         ,-. |    CVGC  CVGC VGC GCVGCV  VGC    GC
+    ||_ O _|   ,-. "._,"|     VGC GCVG  VGC    GCV  VGC   VGC
+    |  |_|    "._,"   A |      GCVGCV   VGCVGCVGCV  VGCVGCVGC
+    |    _  _    B      |      GCVGCV    GCVGCVGCV   GCVGCVGC
+    |   // //           |       CVGC     GCVGCVGCV   GCVGCVGC
+    |  // //    \\\\\\  |
+    |  `  `      \\\\\\ ,          Video Game Collector
+    |________...______,"
