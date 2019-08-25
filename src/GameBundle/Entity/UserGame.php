@@ -96,6 +96,7 @@ class UserGame extends BaseCreateUpdate
 
     /**
      * @ORM\Column(type="smallint")
+     * @Assert\NotNull()
      * @Assert\Range(min = 0, max = 3)
      * 0 : never played
      * 1 : playing
@@ -106,6 +107,7 @@ class UserGame extends BaseCreateUpdate
 
     /**
      * @ORM\Column(type="smallint")
+     * @Assert\NotNull()
      * @Assert\Range(min = 0, max = 4)
      * 0 : bad
      * 1 : good
@@ -117,6 +119,7 @@ class UserGame extends BaseCreateUpdate
 
     /**
      * @ORM\Column(type="smallint")
+     * @Assert\NotNull()
      * @Assert\Range(min = 0, max = 5)
      * 0 : loose
      * 1 : no manual

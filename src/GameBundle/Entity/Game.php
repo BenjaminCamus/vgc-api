@@ -111,6 +111,8 @@ class Game extends BaseObject
      */
     public function __construct()
     {
+        $this->screenshots = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->videos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->series = new \Doctrine\Common\Collections\ArrayCollection();
         $this->developers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->publishers = new \Doctrine\Common\Collections\ArrayCollection();

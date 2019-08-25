@@ -13,7 +13,7 @@ use UserBundle\Entity\User;
  */
 class GameRepository extends EntityRepository
 {
-    public function count()
+    public function countAll()
     {
         return
             (int)

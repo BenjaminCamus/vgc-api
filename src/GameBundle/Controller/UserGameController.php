@@ -105,7 +105,6 @@ class UserGameController extends FOSRestController
     {
         $requestValues = $formValues = $request->request->all();
         $em = $this->getDoctrine()->getManager();
-        $igdbService = $this->container->get('igdb');
 
         // Id
         unset($formValues['id']);
@@ -127,7 +126,10 @@ class UserGameController extends FOSRestController
         }
         $platformRepository = $this->getDoctrine()->getRepository('GameBundle:Platform');
         $platform = $platformRepository->findOneByIgdbId($requestValues['platform']['igdbId']);
-        $formValues['platform'] = is_null($platform) ? null : $platform->getId();
+        if (is_null($platform)) {
+            return View::create(['message' => 'IGDB Platform Id not found.'], Response::HTTP_NOT_FOUND);
+        }
+        $formValues['platform'] = $platform->getId();
 
         // Contacts
         $contactRepository = $this->getDoctrine()->getRepository('GameBundle:Contact');
@@ -159,23 +161,6 @@ class UserGameController extends FOSRestController
                 $igdb = $this->igdbGame($game, $requestValues['platform']['igdbId']);
                 $game = $igdb[0];
                 $userGameReleaseDate = $igdb[1];
-            }
-
-            if (is_null($platform)) {
-
-                // Platform not in db : new Platform
-                $platform = new Platform();
-                $platform->setIgdbId($requestValues['platform']['igdbId']);
-
-                // Get IGDB game
-                $igdb = $igdbService->get('platforms/' . $platform->getIgdbId() . '?fields=*');
-                $igdbPlatform = $igdb[0];
-
-                $platform->setName($igdbPlatform->name);
-                $platform->setIgdbUrl($igdbPlatform->url);
-
-                $em->persist($platform);
-                $em->flush();
             }
 
             $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
@@ -282,7 +267,7 @@ class UserGameController extends FOSRestController
         }
 
         // Get IGDB game
-        $igdb = $igdbService->get('games/' . $game->getIgdbId() . '?fields=*');
+        $igdb = $igdbService->get($game->getIgdbId());
 
         if (!isset($igdb[0])) {
             throw new HttpException(404, "IGDB Game Not Found");
@@ -310,7 +295,7 @@ class UserGameController extends FOSRestController
             }
 
             if (count($dates) > 0) {
-                $userGameReleaseDate = new \DateTime(date('Y-m-d H:i:s', (min($dates) / 1000)));
+                $userGameReleaseDate = new \DateTime(date('Y-m-d H:i:s', (min($dates))), new \DateTimeZone('UTC'));
             }
         }
 
@@ -319,7 +304,7 @@ class UserGameController extends FOSRestController
         // Save cover Image
         $cover = new Image();
         $cover->setUrl($igdbGame->cover->url);
-        $cover->setCloudinaryId($igdbGame->cover->cloudinary_id);
+        $cover->setCloudinaryId($igdbGame->cover->image_id);
         $cover->setWidth($igdbGame->cover->width);
         $cover->setHeight($igdbGame->cover->height);
 
@@ -333,7 +318,7 @@ class UserGameController extends FOSRestController
             foreach ($igdbGame->screenshots as $igdbScreenshot) {
                 $screenshot = new Image();
                 $screenshot->setUrl($igdbScreenshot->url);
-                $screenshot->setCloudinaryId($igdbScreenshot->cloudinary_id);
+                $screenshot->setCloudinaryId($igdbScreenshot->image_id);
                 $screenshot->setWidth($igdbScreenshot->width);
                 $screenshot->setHeight($igdbScreenshot->height);
 
@@ -363,26 +348,24 @@ class UserGameController extends FOSRestController
         // Companies
         $companyRepository = $this->getDoctrine()->getRepository('GameBundle:Company');
 
-        foreach (['developer', 'publisher'] as $type) {
-            if (isset($igdbGame->{$type . 's'})) {
-                foreach ($igdbGame->{$type . 's'} as $igdbCompanyId) {
-                    $company = $companyRepository->findOneByIgdbId($igdbCompanyId);
-                    if (count($company) == 0) {
-                        $company = new Company();
-                        $company->setIgdbId($igdbCompanyId);
+        if (isset($igdbGame->involved_companies)) {
+            foreach ($igdbGame->involved_companies as $igdbCompany) {
+                $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
+                if (is_null($company)) {
+                    $company = new Company();
+                    $company->setIgdbId($igdbCompany->company->id);
 
-                        $igdb = $igdbService->get('companies/' . $company->getIgdbId() . '?fields=*');
-                        $igdbCompany = $igdb[0];
+                    $company->setName($igdbCompany->company->name);
+                    $company->setIgdbUrl($igdbCompany->company->url);
 
-                        $company->setName($igdbCompany->name);
-                        $company->setIgdbUrl($igdbCompany->url);
+                    $em->persist($company);
+                    $em->flush();
+                }
 
-                        $em->persist($company);
-                        $em->flush();
-                    }
-
-                    $method = 'add' . ucfirst($type);
-                    $game->$method($company);
+                if ($igdbCompany->developer) {
+                    $game->addDeveloper($company);
+                } elseif ($igdbCompany->publisher) {
+                    $game->addPublisher($company);
                 }
             }
         }
@@ -392,17 +375,14 @@ class UserGameController extends FOSRestController
 
             if (isset($igdbGame->{$igdbType . 's'})) {
 
-                foreach ($igdbGame->{$igdbType . 's'} as $igdbTagId) {
+                foreach ($igdbGame->{$igdbType . 's'} as $igdbTag) {
                     $tagRepository = $this->getDoctrine()->getRepository('GameBundle:' . ucfirst($type));
-                    $tag = $tagRepository->findOneByIgdbId($igdbTagId);
+                    $tag = $tagRepository->findOneByIgdbId($igdbTag->id);
                     if (is_null($tag)) {
 
                         $class = "GameBundle\\Entity\\" . ucfirst($type);
                         $tag = new $class();
-                        $tag->setIgdbId($igdbTagId);
-
-                        $igdb = $igdbService->get($igdbType . 's/' . $tag->getIgdbId() . '?fields=*');
-                        $igdbTag = $igdb[0];
+                        $tag->setIgdbId($igdbTag->id);
 
                         $tag->setName($igdbTag->name);
                         $tag->setIgdbUrl($igdbTag->url);
@@ -452,7 +432,7 @@ class UserGameController extends FOSRestController
         }
 
         $count = $gameRepository->countByIgdbUpdate(false);
-        $total = $gameRepository->count();
+        $total = $gameRepository->countAll();
         $t1 = microtime(true);
         $message = count($games) . ' game(s) updated, ' . $count . '/' . $total . ' remaining (' . round($t1 - $t0, 3) . 's)';
         return View::create(['message' => $message], Response::HTTP_OK);
