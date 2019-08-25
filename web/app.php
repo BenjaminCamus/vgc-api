@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -17,6 +18,9 @@ $apcLoader = new Symfony\Component\ClassLoader\ApcClassLoader(sha1(__FILE__), $l
 $loader->unregister();
 $apcLoader->register(true);
 */
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__.'/../.env');
 
 $kernel = new AppKernel('prod', false);
 $kernel->loadClassCache();

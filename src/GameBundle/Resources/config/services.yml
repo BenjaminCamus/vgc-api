@@ -27,6 +27,12 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: Games, label: Images }
 
+    game.admin.video:
+        class: GameBundle\Admin\VideoAdmin
+        arguments: [~, GameBundle\Entity\Video, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Games, label: Videos }
+
     game.admin.contact:
         class: GameBundle\Admin\ContactAdmin
         arguments: [~, GameBundle\Entity\Contact, SonataAdminBundle:CRUD]

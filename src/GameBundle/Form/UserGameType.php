@@ -19,9 +19,7 @@ class UserGameType extends AbstractType
             ->add('platform')
             ->add('releaseDate')
             ->add('rating')
-            /* TODO: delete box and manual */
-            ->add('box')
-            ->add('manual')
+            ->add('cond')
             ->add('completeness')
             ->add('version')
             ->add('priceAsked')

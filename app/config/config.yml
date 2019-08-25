@@ -1,5 +1,4 @@
 imports:
-    - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
     - { resource: "@UserBundle/Resources/config/services.yml" }
@@ -8,7 +7,22 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: en
+    locale: en # TODO: '%env(resolve:LOCALE)%'
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: '%env(SECRET)%'
+    fos_user_from_email:
+        address: '%env(FROM_EMAIL_ADDRESS)%'
+        sender_name: '%env(FROM_EMAIL_SENDER_NAME)%'
+    game_api_host: '%env(API_HOST)%'
+    admin_host: '%env(ADMIN_HOST)%'
+    igdb_key: '%env(IGDB_KEY)%'
+    jwt_private_key_path: '%kernel.root_dir%/../var/jwt/private.pem'
+    jwt_public_key_path: '%kernel.root_dir%/../var/jwt/public.pem'
+    jwt_key_pass_phrase: '%env(JWT_PASSPHRASE)%'
+    jwt_token_ttl: 3600
 
 framework:
     #esi:             ~
@@ -46,11 +60,11 @@ twig:
 doctrine:
     dbal:
         driver:   pdo_mysql
-        host:     "%database_host%"
-        port:     "%database_port%"
-        dbname:   "%database_name%"
-        user:     "%database_user%"
-        password: "%database_password%"
+        host:     mysql
+        port:     3306
+        dbname:   "%env(MYSQL_DATABASE)%"
+        user:     "%env(MYSQL_USER)%"
+        password: "%env(MYSQL_PASSWORD)%"
         charset:  UTF8
         mapping_types:
             enum: string
