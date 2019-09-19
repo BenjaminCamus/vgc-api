@@ -71,11 +71,11 @@ docker-compose -f ../nginx-proxy/docker-compose.yml stop
 docker-compose -f ../nginx-proxy/docker-compose.yml up -d
 
 echo_step "docker up"
-make docker-start
+make start
 
 make install
 
 echo_step "docker reload"
-make docker-start
+make start
 
 echo_success "App successfully installed!"
