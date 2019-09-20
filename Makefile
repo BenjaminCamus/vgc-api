@@ -27,3 +27,9 @@ mysql:
 
 admin:
 	xdg-open http://${ADMIN_HOST}
+
+update:
+	git stash
+	git pull
+	git stash pop
+	make start
