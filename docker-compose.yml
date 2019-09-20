@@ -4,7 +4,7 @@ services:
     build: docker/nginx
     image: ${APP_NAME}_nginx
     container_name: ${APP_NAME}_nginx
-#    restart: always # Always restart container
+    restart: always # Always restart container
     volumes:
       - ./docker/nginx/${APP_NAME}.conf:/etc/nginx/conf.d/${APP_NAME}.conf
       - ./:/www
