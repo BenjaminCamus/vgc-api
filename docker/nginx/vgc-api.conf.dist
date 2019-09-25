@@ -1,5 +1,5 @@
 server {
-    server_name api.vgc.local admin.vgc.local;
+    server_name _API_HOST_ _ADMIN_HOST_;
     root /www/web;
 
     location / {

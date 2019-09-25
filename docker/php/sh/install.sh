@@ -47,7 +47,7 @@ cd /www
 
 echo_step "apt-get update / install"
 apt-get update
-apt-get install -y wget git zip unzip
+apt-get install -y wget git zip unzip ftp
 pecl install -o -f zip &&
   echo "extension=zip.so" >>/usr/local/etc/php/conf.d/php.ini
 

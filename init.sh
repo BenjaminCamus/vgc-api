@@ -65,6 +65,14 @@ done <.env.dist
 truncate -s 0 .env
 echo -e "${DOTENV}" >>.env
 
+export $(egrep -v '^#' .env | xargs)
+
+echo_step "nginx conf"
+cp docker/nginx/${APP_NAME}.conf.dist docker/nginx/${APP_NAME}.conf
+sed -i 's/_API_HOST_/'${API_HOST}'/g' docker/nginx/${APP_NAME}.conf
+sed -i 's/_ADMIN_HOST_/'${ADMIN_HOST}'/g' docker/nginx/${APP_NAME}.conf
+cat docker/nginx/${APP_NAME}.conf
+
 echo_step "docker build"
 docker-compose -f docker-compose.yml build
 docker-compose -f ../nginx-proxy/docker-compose.yml stop
