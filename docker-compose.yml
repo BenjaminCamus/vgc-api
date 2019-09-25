@@ -25,6 +25,7 @@ services:
     build: docker/php
     image: ${APP_NAME}_php
     container_name: ${APP_NAME}_php
+    restart: always # Always restart container
     volumes:
       - ./:/www
     links:
@@ -35,6 +36,7 @@ services:
   mysql:
     image: mysql:5.7
     container_name: ${APP_NAME}_mysql
+    restart: always # Always restart container
     ports:
       - 3306:3306
     volumes:
