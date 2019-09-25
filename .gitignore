@@ -8,3 +8,4 @@
 /.idea
 /cov
 /docker/nginx/vgc-api.conf
+/dumps

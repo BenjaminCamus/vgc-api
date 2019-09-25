@@ -26,10 +26,11 @@ mysql:
 	docker exec -it ${APP_NAME}_mysql mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE}
 
 dump-import:
-	docker exec ${APP_NAME}_mysql mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE}  < ${FILE}
+	docker exec -i ${APP_NAME}_mysql mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE}  < ${FILE}
 
 dump-export:
-	docker exec ${APP_NAME}_mysql mysqldump -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} > var/dumps/vgc-dump-`date + '%F'`.sql
+	mkdir -p dumps
+	docker exec ${APP_NAME}_mysql mysqldump -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} > dumps/vgc-dump-`date +'%Y-%m-%d'`.sql
 
 dump-ftp: dump-export
 	docker exec ${APP_NAME}_php /www/docker/php/sh/dump-ftp.sh
@@ -38,8 +39,6 @@ admin:
 	xdg-open http://${ADMIN_HOST}
 
 update:
-	git stash
 	git pull
-	git stash pop
 	docker exec ${APP_NAME}_php bash /sh/update.sh
 	make start

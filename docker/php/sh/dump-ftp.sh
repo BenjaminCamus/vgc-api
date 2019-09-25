@@ -2,10 +2,10 @@
 
 export $(egrep -v '^#' /www/.env | xargs)
 
-cd /www/var/dumps
+cd /www/dumps
 
 # DUMP
-DUMPFILE=vgc-dump-$(date + "%F").sql
+DUMPFILE=vgc-dump-$(date +%Y-%m-%d).sql
 
 ftp -pnv ${FTP_HOST} ${FTP_PORT} << END_SCRIPT
 quote USER ${FTP_LOGIN}
