@@ -81,7 +81,7 @@ docker-compose -f ../nginx-proxy/docker-compose.yml up -d
 echo_step "docker up"
 make start
 
-make install
+docker exec -it ${APP_NAME}_php bash /www/docker/php/sh/install.sh -p ${JWT_PASSPHRASE} -sau ${SUPER_ADMIN_USERNAME} -sae ${SUPER_ADMIN_EMAIL} -sap ${SUPER_ADMIN_PASSWORD}
 
 echo_step "docker reload"
 make start
