@@ -37,5 +37,5 @@ admin:
 
 update:
 	git pull
-	docker exec ${APP_NAME}_php bash /sh/update.sh
+	docker exec ${APP_NAME}_php bash /www/docker/php/sh/update.sh
 	make start
