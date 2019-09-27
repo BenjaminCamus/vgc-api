@@ -536,4 +536,16 @@ class UserGameController extends FOSRestController
             throw new HttpException(404, "Series CSV File Not Found");
         }
     }
+
+    /**
+     * @Rest\View
+     * @Rest\Get("/user/places")
+     */
+    public function getPlacesAction()
+    {
+        $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
+        $places = $userGameRepository->userPlaces($this->getUser());
+
+        return $places;
+    }
 }

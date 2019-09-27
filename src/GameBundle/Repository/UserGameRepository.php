@@ -24,4 +24,29 @@ class UserGameRepository extends EntityRepository
                 ->getQuery()
                 ->getSingleScalarResult();
     }
+
+    public function userPlaces(User $user)
+    {
+      $results = $this->createQueryBuilder('ug')
+        ->select('ug.purchasePlace, ug.salePlace')
+        ->where('ug.user = :user')
+        ->setParameter('user', $user)
+        ->getQuery()
+        ->getResult();
+
+      $places = [];
+
+      foreach ($results as $ug) {
+        if (!is_null($ug['purchasePlace']) && !empty($ug['purchasePlace'])) {
+        $places[] = $ug['purchasePlace'];
+        }
+          if (!is_null($ug['salePlace']) && !empty($ug['salePlace'])) {
+          $places[] = $ug['salePlace'];
+          }
+      }
+
+
+
+        return array_values(array_unique($places));
+    }
 }
