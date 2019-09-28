@@ -12,6 +12,30 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class UserGame extends BaseCreateUpdate
 {
+    const PROGRESS_LIST = [
+        'Never Played' => 'NEVER_PLAYED',
+        'In Progress' => 'IN_PROGRESS',
+        'Finished' => 'FINISHED',
+        'Abandoned' => 'ABANDONED'
+    ];
+
+    const COMPLETENESS_LIST = [
+        'Loose' => 'LOOSE',
+        'No Manual' => 'NO_MANUAL',
+        'No Box' => 'NO_BOX',
+        'Complete' => 'COMPLETE',
+        'Dematerialized' => 'DEMATERIALIZED',
+        'New' => 'NEW'
+    ];
+
+    const COND_LIST = [
+        'Not So Good' => 'BAD',
+        'Good Condition' => 'GOOD',
+        'Very Good Condition' => 'VERY_GOOD',
+        'Near Mint' => 'NEAR_MINT',
+        'Mint' => 'MINT',
+    ];
+
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="guid")
@@ -85,40 +109,25 @@ class UserGame extends BaseCreateUpdate
     private $saleDate;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="string")
      * @Assert\NotNull()
-     * @Assert\Range(min = 0, max = 3)
-     * 0 : never played
-     * 1 : playing
-     * 2 : over
-     * 3 : abandoned
+     * @Assert\Choice(choices=UserGame::PROGRESS_LIST)
      */
-    private $progress = 0;
+    private $progress = 'LOOSE';
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="string")
      * @Assert\NotNull()
-     * @Assert\Range(min = 0, max = 4)
-     * 0 : bad
-     * 1 : good
-     * 2 : very good
-     * 3 : near mint
-     * 4 : mint
+     * @Assert\Choice(choices=UserGame::COND_LIST)
      */
-    private $cond = 2;
+    private $cond = 'VERY_GOOD';
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="string")
      * @Assert\NotNull()
-     * @Assert\Range(min = 0, max = 5)
-     * 0 : loose
-     * 1 : no manual
-     * 2 : no box
-     * 3 : CIB
-     * 4 : dematerialized
-     * 5 : new
+     * @Assert\Choice(choices=UserGame::COMPLETENESS_LIST)
      */
-    private $completeness = 3;
+    private $completeness = 'COMPLETE';
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -367,7 +376,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Get progress
      *
-     * @return integer
+     * @return string
      */
     public function getProgress()
     {
@@ -377,7 +386,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Set progress
      *
-     * @param integer $progress
+     * @param string $progress
      *
      * @return UserGame
      */
@@ -391,7 +400,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Get cond
      *
-     * @return integer
+     * @return string
      */
     public function getCond()
     {
@@ -401,7 +410,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Set cond
      *
-     * @param integer $cond
+     * @param string $cond
      *
      * @return UserGame
      */
@@ -415,7 +424,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Get completeness
      *
-     * @return integer
+     * @return string
      */
     public function getCompleteness()
     {
@@ -425,7 +434,7 @@ class UserGame extends BaseCreateUpdate
     /**
      * Set cond
      *
-     * @param integer $completeness
+     * @param string $completeness
      *
      * @return UserGame
      */

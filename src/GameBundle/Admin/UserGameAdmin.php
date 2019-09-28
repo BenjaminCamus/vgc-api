@@ -2,6 +2,7 @@
 
 namespace GameBundle\Admin;
 
+use GameBundle\Entity\UserGame;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -45,7 +46,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('game')
             ->add('platform')
             ->add('rating')
-            ->add('completeness')
+            ->add('completeness', 'choice', ['choices' => array_flip(UserGame::COMPLETENESS_LIST)])
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')
@@ -53,8 +54,8 @@ class UserGameAdmin extends AbstractAdmin
             ->add('priceSold')
             ->add('purchaseDate')
             ->add('saleDate')
-            ->add('progress')
-            ->add('cond')
+            ->add('progress', 'choice', ['choices' => array_flip(UserGame::PROGRESS_LIST)])
+            ->add('cond', 'choice', ['choices' => array_flip(UserGame::COND_LIST)])
             ->add('note')
             ->add('_action', null, array(
                 'actions' => array(
@@ -75,7 +76,7 @@ class UserGameAdmin extends AbstractAdmin
             ->add('game')
             ->add('platform')
             ->add('rating')
-            ->add('completeness')
+            ->add('completeness', 'choice', ['choices' => UserGame::COMPLETENESS_LIST])
             ->add('version')
             ->add('priceAsked')
             ->add('pricePaid')
@@ -83,8 +84,8 @@ class UserGameAdmin extends AbstractAdmin
             ->add('priceSold')
             ->add('purchaseDate')
             ->add('saleDate')
-            ->add('progress')
-            ->add('cond')
+            ->add('progress', 'choice', ['choices' => UserGame::PROGRESS_LIST])
+            ->add('cond', 'choice', ['choices' => UserGame::COND_LIST])
             ->add('note');
     }
 
