@@ -49,16 +49,6 @@ class UserGame extends BaseCreateUpdate
     private $rating;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $box = true;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $manual = true;
-
-    /**
      * @ORM\Column(length=10)
      * @Assert\NotBlank()
      */
@@ -186,54 +176,6 @@ class UserGame extends BaseCreateUpdate
     public function setRating($rating)
     {
         $this->rating = $rating;
-
-        return $this;
-    }
-
-    /**
-     * Get box
-     *
-     * @return boolean
-     */
-    public function getBox()
-    {
-        return $this->box;
-    }
-
-    /**
-     * Set box
-     *
-     * @param boolean $box
-     *
-     * @return UserGame
-     */
-    public function setBox($box)
-    {
-        $this->box = $box;
-
-        return $this;
-    }
-
-    /**
-     * Get manual
-     *
-     * @return boolean
-     */
-    public function getManual()
-    {
-        return $this->manual;
-    }
-
-    /**
-     * Set manual
-     *
-     * @param boolean $manual
-     *
-     * @return UserGame
-     */
-    public function setManual($manual)
-    {
-        $this->manual = $manual;
 
         return $this;
     }
