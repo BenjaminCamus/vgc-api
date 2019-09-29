@@ -145,8 +145,12 @@ fos_rest:
             - { path: '^/', host: '%game_api_host%', priorities: ['json'], fallback_format: 'json' }
             - { path: '^/', priorities: ['html'], fallback_format: 'html' }
     disable_csrf_role: IS_AUTHENTICATED_ANONYMOUSLY
+    serializer:
+      serialize_null: true
 
 jms_serializer:
+  property_naming:
+    id: 'jms_serializer.identical_property_naming_strategy'
   metadata:
     auto_detection: true
     directories:
