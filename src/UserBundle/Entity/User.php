@@ -5,10 +5,12 @@ use FOS\UserBundle\Model\User as BaseUser;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="fos_user")
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class User extends BaseUser
 {
@@ -21,6 +23,7 @@ class User extends BaseUser
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
+     * @Serializer\Expose
      */
     protected $createdAt;
     /**

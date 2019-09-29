@@ -146,6 +146,14 @@ fos_rest:
             - { path: '^/', priorities: ['html'], fallback_format: 'html' }
     disable_csrf_role: IS_AUTHENTICATED_ANONYMOUSLY
 
+jms_serializer:
+  metadata:
+    auto_detection: true
+    directories:
+      FOSUB:
+        namespace_prefix: 'FOS\UserBundle'
+        path: '%kernel.root_dir%/serializer'
+
 # JSON With Tokens
 lexik_jwt_authentication:
     private_key_path: '%jwt_private_key_path%'
