@@ -353,7 +353,7 @@ class UserGameController extends FOSRestController
             $addedPublishers = [];
             foreach ($igdbGame->involved_companies as $igdbCompany) {
                 if (($igdbCompany->developer && !in_array($igdbCompany->company->id, $addedDevelopers)
-                     || ($igdbCompany->publisher && !in_array($igdbCompany->company->id, $addedPublishers) {
+                     || ($igdbCompany->publisher && !in_array($igdbCompany->company->id, $addedPublishers)) {
                     $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
                     if (is_null($company)) {
                         $company = new Company();
