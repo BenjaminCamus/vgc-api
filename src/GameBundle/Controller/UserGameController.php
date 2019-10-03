@@ -349,23 +349,30 @@ class UserGameController extends FOSRestController
         $companyRepository = $this->getDoctrine()->getRepository('GameBundle:Company');
 
         if (isset($igdbGame->involved_companies)) {
+            $addedDevelopers = [];
+            $addedPublishers = [];
             foreach ($igdbGame->involved_companies as $igdbCompany) {
-                $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
-                if (is_null($company)) {
-                    $company = new Company();
-                    $company->setIgdbId($igdbCompany->company->id);
+                if (($igdbCompany->developer && !in_array($igdbCompany->company->id, $addedDevelopers)
+                     || ($igdbCompany->publisher && !in_array($igdbCompany->company->id, $addedPublishers) {
+                    $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
+                    if (is_null($company)) {
+                        $company = new Company();
+                        $company->setIgdbId($igdbCompany->company->id);
 
-                    $company->setName($igdbCompany->company->name);
-                    $company->setIgdbUrl($igdbCompany->company->url);
+                        $company->setName($igdbCompany->company->name);
+                        $company->setIgdbUrl($igdbCompany->company->url);
 
-                    $em->persist($company);
-                    $em->flush();
-                }
+                        $em->persist($company);
+                        $em->flush();
+                    }
 
-                if ($igdbCompany->developer) {
-                    $game->addDeveloper($company);
-                } elseif ($igdbCompany->publisher) {
-                    $game->addPublisher($company);
+                    if ($igdbCompany->developer) {
+                        $game->addDeveloper($company);
+                        $addedDevelopers[] = $igdbCompany->company->id;
+                    } elseif ($igdbCompany->publisher) {
+                        $game->addPublisher($company);
+                        $addedPublishers[] = $igdbCompany->company->id;
+                    }
                 }
             }
         }
