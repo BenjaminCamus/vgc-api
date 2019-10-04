@@ -41,8 +41,7 @@ class IgdbController extends FOSRestController
                 foreach ($igdbGame->screenshots as $key => $screenshot) {
                     if (is_object($screenshot)) {
                         $screenshot->cloudinaryId = $screenshot->image_id;
-                    }
-                    else {
+                    } else {
                         unset($igdbGame->screenshots[$key]);
                     }
                 }
@@ -53,8 +52,7 @@ class IgdbController extends FOSRestController
                 foreach ($igdbGame->videos as  $key => $video) {
                     if (is_object($video)) {
                         $video->youtubeId = $video->video_id;
-                    }
-                    else {
+                    } else {
                         unset($igdbGame->videos[$key]);
                     }
                 }

@@ -70,10 +70,10 @@ class Contact extends BaseCreateUpdate
         // Contact
         $display = '';
 
-        $display .= $this->firstName != '' ? ' ' . $this->firstName : '';
-        $display .= $this->lastName != '' ? ' ' . $this->lastName : '';
-        $display .= $this->nickname != '' && $this->nickname != $this->firstName ? ' ' . $this->nickname : '';
-        $display .= $this->city != '' ? ' (' . $this->city . ')' : '';
+        $display .= $this->firstName != '' ? ' '.$this->firstName : '';
+        $display .= $this->lastName != '' ? ' '.$this->lastName : '';
+        $display .= $this->nickname != '' && $this->nickname != $this->firstName ? ' '.$this->nickname : '';
+        $display .= $this->city != '' ? ' ('.$this->city.')' : '';
 
         return $display;
     }
