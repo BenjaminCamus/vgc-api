@@ -53,7 +53,7 @@ class IGDB
             . 'url, '
             . 'videos.name, '
             . 'videos.video_id;'
-            . 'limit 10;'
+            . 'limit 30;'
             . $param;
 
         $response = Unirest\Request::post(self::IGDB_URL . 'games',
