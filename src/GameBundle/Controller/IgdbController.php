@@ -38,15 +38,27 @@ class IgdbController extends FOSRestController
             $igdbGame->cover->cloudinaryId = $igdbGame->cover->image_id;
 
             if (isset($igdbGame->screenshots) && count($igdbGame->screenshots) > 0) {
-                foreach ($igdbGame->screenshots as $screenshot) {
-                    $screenshot->cloudinaryId = $screenshot->image_id;
+                foreach ($igdbGame->screenshots as $key => $screenshot) {
+                    if (is_object($screenshot)) {
+                        $screenshot->cloudinaryId = $screenshot->image_id;
+                    }
+                    else {
+                        unset($igdbGame->screenshots[$key]);
+                    }
                 }
+                $igdbGame->screenshots = array_values($igdbGame->screenshots);
             }
 
             if (isset($igdbGame->videos) && count($igdbGame->videos) > 0) {
-                foreach ($igdbGame->videos as $video) {
-                    $video->youtubeId = $video->video_id;
+                foreach ($igdbGame->videos as  $key => $video) {
+                    if (is_object($video)) {
+                        $video->youtubeId = $video->video_id;
+                    }
+                    else {
+                        unset($igdbGame->videos[$key]);
+                    }
                 }
+                $igdbGame->videos = array_values($igdbGame->videos);
             }
 
             $igdbGamePlatforms = [];

@@ -316,28 +316,30 @@ class UserGameController extends FOSRestController
         // Save screenshots Images
         if (isset($igdbGame->screenshots)) {
             foreach ($igdbGame->screenshots as $igdbScreenshot) {
-                $screenshot = new Image();
-                $screenshot->setUrl($igdbScreenshot->url);
-                $screenshot->setCloudinaryId($igdbScreenshot->image_id);
-                $screenshot->setWidth($igdbScreenshot->width);
-                $screenshot->setHeight($igdbScreenshot->height);
-
-                $em->persist($screenshot);
-                $em->flush();
-
-                $game->addScreenshot($screenshot);
+                if (is_object($igdbScreenshot)) {
+                    $screenshot = new Image();
+                    $screenshot->setUrl($igdbScreenshot->url);
+                    $screenshot->setCloudinaryId($igdbScreenshot->image_id);
+                    $screenshot->setWidth($igdbScreenshot->width);
+                    $screenshot->setHeight($igdbScreenshot->height);
+                    $em->persist($screenshot);
+                    $em->flush();
+                    $game->addScreenshot($screenshot);
+                }
             }
         }
 
         // Save Videos
         if (isset($igdbGame->videos)) {
             foreach ($igdbGame->videos as $igdbVideo) {
-                $video = new Video();
-                $video->setName($igdbVideo->name);
-                $video->setYoutubeId($igdbVideo->video_id);
-                $em->persist($video);
-                $em->flush();
-                $game->addVideo($video);
+                if (is_object($igdbVideo)) {
+                    $video = new Video();
+                    $video->setName($igdbVideo->name);
+                    $video->setYoutubeId($igdbVideo->video_id);
+                    $em->persist($video);
+                    $em->flush();
+                    $game->addVideo($video);
+                }
             }
         }
 
