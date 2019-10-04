@@ -261,8 +261,8 @@ class UserGameController extends FOSRestController
                         'developer', 'publisher',
                         'mode', 'theme', 'genre'
                     ] as $type) {
-            foreach ($game->{'get' . ucfirst($type) . 's'}() as $obj) {
-                $game->{'remove' . ucfirst($type)}($obj);
+            foreach ($game->{'get'.ucfirst($type).'s'}() as $obj) {
+                $game->{'remove'.ucfirst($type)}($obj);
             }
         }
 
