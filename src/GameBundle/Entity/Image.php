@@ -54,7 +54,7 @@ class Image extends BaseCreateUpdate
      */
     public function __toString()
     {
-        return (string)$this->url;
+        return (string) $this->url;
     }
 
     /**

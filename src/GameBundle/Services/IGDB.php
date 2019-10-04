@@ -15,7 +15,7 @@ class IGDB
 
     public function get($id)
     {
-        $param = 'where id=' . $id . ';';
+        $param = 'where id='.$id.';';
         return $this->response($param);
     }
 
@@ -56,7 +56,7 @@ class IGDB
             . 'limit 30;'
             . $param;
 
-        $response = Unirest\Request::post(self::IGDB_URL . 'games',
+        $response = Unirest\Request::post(self::IGDB_URL.'games',
             array(
                 'user-key' => $this->igdbKey,
                 'Accept' => 'application/json'
@@ -73,7 +73,7 @@ class IGDB
 
     public function search($search)
     {
-        $param = 'search "' . addslashes($search) . '";';
+        $param = 'search "'.addslashes($search).'";';
         return $this->response($param);
     }
 }

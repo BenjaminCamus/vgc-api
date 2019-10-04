@@ -44,7 +44,7 @@ class BaseObject extends BaseCreateUpdate
      */
     public function __toString()
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**
