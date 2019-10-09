@@ -45,7 +45,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        return $this->handleAuthenticationSuccess($token->getUser());
+        return $this->handleAuthenticationSuccess(/** @scrutinizer ignore-type */ $token->getUser());
     }
 
     public function handleAuthenticationSuccess(User $user, $jwt = null)
