@@ -407,24 +407,6 @@ class Game extends BaseObject
     }
 
     /**
-     * @param UserGroup $userGroup
-     */
-    public function addUserGroup(UserGroup $userGroup)
-    {
-    }
-    /**
-     * @param UserGroup $userGroup
-     */
-    public function removeUserGroup(UserGroup $userGroup)
-    {
-        if (!$this->userGroups->contains($userGroup)) {
-            return;
-        }
-        $this->userGroups->removeElement($userGroup);
-        $userGroup->removeUser($this);
-    }
-
-    /**
      * Add developer
      *
      * @param Company $developer
