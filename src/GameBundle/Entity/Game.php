@@ -407,15 +407,36 @@ class Game extends BaseObject
     }
 
     /**
+     * @param UserGroup $userGroup
+     */
+    public function addUserGroup(UserGroup $userGroup)
+    {
+    }
+    /**
+     * @param UserGroup $userGroup
+     */
+    public function removeUserGroup(UserGroup $userGroup)
+    {
+        if (!$this->userGroups->contains($userGroup)) {
+            return;
+        }
+        $this->userGroups->removeElement($userGroup);
+        $userGroup->removeUser($this);
+    }
+
+    /**
      * Add developer
      *
      * @param Company $developer
      *
-     * @return Game
+     * @return null|Game
      */
-    public function addDeveloper(Company $developer)
+    public function addDeveloper(Company $developer): ?Game
     {
-        $this->developers[] = $developer;
+        if ($this->developers->contains($developer)) {
+            return null;
+        }
+        $this->developers->add($developer);
 
         return $this;
     }
@@ -427,6 +448,9 @@ class Game extends BaseObject
      */
     public function removeDeveloper(Company $developer)
     {
+        if (!$this->developers->contains($developer)) {
+            return;
+        }
         $this->developers->removeElement($developer);
     }
 
@@ -445,11 +469,14 @@ class Game extends BaseObject
      *
      * @param Company $publisher
      *
-     * @return Game
+     * @return null|Game
      */
-    public function addPublisher(Company $publisher)
+    public function addPublisher(Company $publisher): ?Game
     {
-        $this->publishers[] = $publisher;
+        if ($this->publishers->contains($publisher)) {
+            return null;
+        }
+        $this->publishers->add($publisher);
 
         return $this;
     }
@@ -461,6 +488,9 @@ class Game extends BaseObject
      */
     public function removePublisher(Company $publisher)
     {
+        if (!$this->publishers->contains($publisher)) {
+            return;
+        }
         $this->publishers->removeElement($publisher);
     }
 
