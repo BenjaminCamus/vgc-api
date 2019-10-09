@@ -14,7 +14,11 @@ class ImageAdmin extends AbstractAdmin
 
     protected function configureRoutes(RouteCollection $collection)
     {
-        $collection->remove('create', 'edit', 'delete', 'show');
+        $collection
+            ->remove('create')
+            ->remove('edit')
+            ->remove('delete')
+            ->remove('show');
     }
 
     /**
