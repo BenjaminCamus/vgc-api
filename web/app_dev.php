@@ -29,7 +29,6 @@ $dotenv = new Dotenv();
 $dotenv->load(__DIR__.'/../.env');
 
 $kernel = new AppKernel('dev', true);
-$kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
