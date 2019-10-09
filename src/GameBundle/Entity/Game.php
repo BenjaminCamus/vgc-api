@@ -1,6 +1,7 @@
 <?php
 namespace GameBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,7 +24,7 @@ class Game extends BaseObject
     private $ratingCount;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
     private $igdbUpdate;
 
@@ -170,23 +171,18 @@ class Game extends BaseObject
     }
 
     /**
-     * Get igdbUpdatedAt
-     *
-     * @return \DateTime
+     * @return bool
      */
-    public function getIgdbUpdate()
+    public function isIgdbUpdate(): bool
     {
         return $this->igdbUpdate;
     }
 
     /**
-     * Set igdbUpdate
-     *
-     * @param \DateTime $igdbUpdate
-     *
+     * @param bool $igdbUpdate
      * @return Game
      */
-    public function setIgdbUpdate($igdbUpdate)
+    public function setIgdbUpdate(bool $igdbUpdate): Game
     {
         $this->igdbUpdate = $igdbUpdate;
         return $this;
@@ -385,25 +381,11 @@ class Game extends BaseObject
     /**
      * Get series
      *
-     * @return Series
+     * @return ArrayCollection
      */
     public function getSeries()
     {
         return $this->series;
-    }
-
-    /**
-     * Set series
-     *
-     * @param Series $series
-     *
-     * @return Game
-     */
-    public function setSeries(Series $series = null)
-    {
-        $this->series = $series;
-
-        return $this;
     }
 
     /**
@@ -439,7 +421,7 @@ class Game extends BaseObject
     /**
      * Get developers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getDevelopers()
     {
@@ -479,7 +461,7 @@ class Game extends BaseObject
     /**
      * Get publishers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getPublishers()
     {

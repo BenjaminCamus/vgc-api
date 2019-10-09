@@ -9,7 +9,7 @@
 namespace GameBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use GameBundle\Entity\Company;
 use GameBundle\Entity\Contact;
@@ -21,11 +21,12 @@ use GameBundle\Entity\UserGame;
 use GameBundle\Entity\Video;
 use GameBundle\Form\ContactType;
 use GameBundle\Form\UserGameType;
+use GameBundle\Repository\UserGameRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class UserGameController extends FOSRestController
+class UserGameController extends AbstractFOSRestController
 {
     /**
      * @Rest\View
@@ -54,7 +55,7 @@ class UserGameController extends FOSRestController
     public function getCountUserGamesAction(Request $request)
     {
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        return $userGameRepository->countByUser($this->getUser());
+        return $userGameRepository->countByUser(/** @scrutinizer ignore-type */ $this->getUser());
     }
 
     /**
@@ -117,6 +118,7 @@ class UserGameController extends FOSRestController
             return View::create(['message' => 'IGDB Game Id is missing.'], Response::HTTP_NOT_FOUND);
         }
         $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+        /** @scrutinizer ignore-call */
         $game = $gameRepository->findOneByIgdbId($requestValues['game']['igdbId']);
         $formValues['game'] = is_null($game) ? null : $game->getId();
 
@@ -125,6 +127,7 @@ class UserGameController extends FOSRestController
             return View::create(['message' => 'IGDB Platform Id is missing.'], Response::HTTP_NOT_FOUND);
         }
         $platformRepository = $this->getDoctrine()->getRepository('GameBundle:Platform');
+        /** @scrutinizer ignore-call */
         $platform = $platformRepository->findOneByIgdbId($requestValues['platform']['igdbId']);
         if (is_null($platform)) {
             return View::create(['message' => 'IGDB Platform Id not found.'], Response::HTTP_NOT_FOUND);
@@ -219,7 +222,7 @@ class UserGameController extends FOSRestController
                 }
             }
 
-            $userGame->setUser($this->getUser());
+            $userGame->setUser(/** @scrutinizer ignore-type */ $this->getUser());
             $userGame->setGame($game);
             $userGame->setPlatform($platform);
 
@@ -352,6 +355,7 @@ class UserGameController extends FOSRestController
 
         if (isset($igdbGame->involved_companies)) {
             foreach ($igdbGame->involved_companies as $igdbCompany) {
+                /** @scrutinizer ignore-call */
                 $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
                 if (is_null($company)) {
                     $company = new Company();
@@ -379,6 +383,7 @@ class UserGameController extends FOSRestController
 
                 foreach ($igdbGame->{$igdbType . 's'} as $igdbTag) {
                     $tagRepository = $this->getDoctrine()->getRepository('GameBundle:' . ucfirst($type));
+                    /** @scrutinizer ignore-call */
                     $tag = $tagRepository->findOneByIgdbId($igdbTag->id);
                     if (is_null($tag)) {
 
@@ -545,8 +550,9 @@ class UserGameController extends FOSRestController
      */
     public function getPlacesAction()
     {
+        /** @var UserGameRepository $userGameRepository */
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        $places = $userGameRepository->userPlaces($this->getUser());
+        $places = $userGameRepository->userPlaces(/** @scrutinizer ignore-type */ $this->getUser());
 
         return $places;
     }
