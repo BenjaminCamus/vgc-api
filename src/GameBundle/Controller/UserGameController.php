@@ -548,6 +548,68 @@ class UserGameController extends FOSRestController
 
     /**
      * @Rest\View
+     * @Rest\Get("/batch/release-dates")
+     */
+    public function releaseDatesAction()
+    {
+        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
+            throw new HttpException(403, "Super Admin Only");
+        }
+
+        ini_set('max_execution_time', 0);
+
+        $results = [];
+
+        $em = $this->getDoctrine()->getManager();
+        $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
+        $userGames = $userGameRepository->findBy([
+            'releaseDate' => null
+        ], [], 100);
+
+        foreach ($userGames as $userGame) {
+            $result = [
+                'game' => $userGame->getGame()->getName(),
+                'platform' => $userGame->getPlatform()->getName()
+            ];
+
+            $igdbService = $this->container->get('igdb');
+
+            // Get IGDB game
+            $igdb = $igdbService->get($userGame->getGame()->getIgdbId());
+
+            if (!isset($igdb[0])) {
+                $result['error'] = 'NOT FOUND';
+                $results[] = $result;
+                continue;
+            }
+
+            $igdbGame = $igdb[0];
+
+            if ($igdbGame->release_dates) {
+
+                $dates = [];
+                foreach ($igdbGame->release_dates as $releaseDate) {
+                    if ($releaseDate->platform == $userGame->getPlatform()->getIgdbId()) {
+                        $dates[] = $releaseDate->date;
+                    }
+                }
+
+                if (count($dates) > 0) {
+                    $userGameReleaseDate = new \DateTime(date('Y-m-d H:i:s', (min($dates))), new \DateTimeZone('UTC'));
+                    $userGame->setReleaseDate($userGameReleaseDate);
+                    $em->persist($userGame);
+                    $em->flush();
+                }
+            }
+            $result['release date'] = $userGame->getReleaseDate();
+            $results[] = $result;
+        }
+
+        return View::create($results, Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\View
      * @Rest\Get("/user/places")
      */
     public function getPlacesAction()
