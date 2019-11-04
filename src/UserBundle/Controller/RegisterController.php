@@ -2,7 +2,7 @@
 namespace UserBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
-class RegisterController extends FOSRestController implements ClassResourceInterface
+class RegisterController extends AbstractFOSRestController implements ClassResourceInterface
 {
     /**
      * @Rest\View(statusCode=Symfony\Component\HttpFoundation\Response::HTTP_CREATED)
@@ -37,9 +37,7 @@ class RegisterController extends FOSRestController implements ClassResourceInter
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
-        $form = $formFactory->createForm([
-            'csrf_protection' => false
-        ]);
+        $form = $formFactory->createForm();
         $form->setData($user);
         $form->submit($request->request->all());
         if (!$form->isValid()) {

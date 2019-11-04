@@ -1,6 +1,7 @@
 <?php
 namespace GameBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,7 +24,7 @@ class Game extends BaseObject
     private $ratingCount;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
     private $igdbUpdate;
 
@@ -170,23 +171,18 @@ class Game extends BaseObject
     }
 
     /**
-     * Get igdbUpdatedAt
-     *
-     * @return \DateTime
+     * @return bool
      */
-    public function getIgdbUpdate()
+    public function isIgdbUpdate(): bool
     {
         return $this->igdbUpdate;
     }
 
     /**
-     * Set igdbUpdate
-     *
-     * @param \DateTime $igdbUpdate
-     *
+     * @param bool $igdbUpdate
      * @return Game
      */
-    public function setIgdbUpdate($igdbUpdate)
+    public function setIgdbUpdate(bool $igdbUpdate): Game
     {
         $this->igdbUpdate = $igdbUpdate;
         return $this;
@@ -385,7 +381,7 @@ class Game extends BaseObject
     /**
      * Get series
      *
-     * @return Series
+     * @return ArrayCollection
      */
     public function getSeries()
     {
@@ -393,29 +389,18 @@ class Game extends BaseObject
     }
 
     /**
-     * Set series
-     *
-     * @param Series $series
-     *
-     * @return Game
-     */
-    public function setSeries(Series $series = null)
-    {
-        $this->series = $series;
-
-        return $this;
-    }
-
-    /**
      * Add developer
      *
      * @param Company $developer
      *
-     * @return Game
+     * @return null|Game
      */
-    public function addDeveloper(Company $developer)
+    public function addDeveloper(Company $developer): ?Game
     {
-        $this->developers[] = $developer;
+        if ($this->developers->contains($developer)) {
+            return null;
+        }
+        $this->developers->add($developer);
 
         return $this;
     }
@@ -427,13 +412,16 @@ class Game extends BaseObject
      */
     public function removeDeveloper(Company $developer)
     {
+        if (!$this->developers->contains($developer)) {
+            return;
+        }
         $this->developers->removeElement($developer);
     }
 
     /**
      * Get developers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getDevelopers()
     {
@@ -445,11 +433,14 @@ class Game extends BaseObject
      *
      * @param Company $publisher
      *
-     * @return Game
+     * @return null|Game
      */
-    public function addPublisher(Company $publisher)
+    public function addPublisher(Company $publisher): ?Game
     {
-        $this->publishers[] = $publisher;
+        if ($this->publishers->contains($publisher)) {
+            return null;
+        }
+        $this->publishers->add($publisher);
 
         return $this;
     }
@@ -461,13 +452,16 @@ class Game extends BaseObject
      */
     public function removePublisher(Company $publisher)
     {
+        if (!$this->publishers->contains($publisher)) {
+            return;
+        }
         $this->publishers->removeElement($publisher);
     }
 
     /**
      * Get publishers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getPublishers()
     {

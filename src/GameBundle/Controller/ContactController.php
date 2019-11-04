@@ -9,9 +9,9 @@
 namespace GameBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 
-class ContactController extends FOSRestController
+class ContactController extends AbstractFOSRestController
 {
     /**
      * @Rest\View
@@ -20,7 +20,7 @@ class ContactController extends FOSRestController
     public function getContactsAction()
     {
         $contactRepository = $this->getDoctrine()->getRepository('GameBundle:Contact');
-        $contacts = $contactRepository->findByUser($this->getUser());
+        $contacts = $contactRepository->findByUser(/** @scrutinizer ignore-type */ $this->getUser());
 
         return $contacts;
     }

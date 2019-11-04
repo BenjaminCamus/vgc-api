@@ -9,7 +9,7 @@
 namespace GameBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use GameBundle\Entity\Company;
 use GameBundle\Entity\Contact;
@@ -21,11 +21,12 @@ use GameBundle\Entity\UserGame;
 use GameBundle\Entity\Video;
 use GameBundle\Form\ContactType;
 use GameBundle\Form\UserGameType;
+use GameBundle\Repository\UserGameRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class UserGameController extends FOSRestController
+class UserGameController extends AbstractFOSRestController
 {
     /**
      * @Rest\View
@@ -54,7 +55,7 @@ class UserGameController extends FOSRestController
     public function getCountUserGamesAction(Request $request)
     {
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        return $userGameRepository->countByUser($this->getUser());
+        return $userGameRepository->countByUser(/** @scrutinizer ignore-type */ $this->getUser());
     }
 
     /**
@@ -117,6 +118,7 @@ class UserGameController extends FOSRestController
             return View::create(['message' => 'IGDB Game Id is missing.'], Response::HTTP_NOT_FOUND);
         }
         $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+        /** @scrutinizer ignore-call */
         $game = $gameRepository->findOneByIgdbId($requestValues['game']['igdbId']);
         $formValues['game'] = is_null($game) ? null : $game->getId();
 
@@ -125,6 +127,7 @@ class UserGameController extends FOSRestController
             return View::create(['message' => 'IGDB Platform Id is missing.'], Response::HTTP_NOT_FOUND);
         }
         $platformRepository = $this->getDoctrine()->getRepository('GameBundle:Platform');
+        /** @scrutinizer ignore-call */
         $platform = $platformRepository->findOneByIgdbId($requestValues['platform']['igdbId']);
         if (is_null($platform)) {
             return View::create(['message' => 'IGDB Platform Id not found.'], Response::HTTP_NOT_FOUND);
@@ -136,11 +139,11 @@ class UserGameController extends FOSRestController
 
         foreach (['purchase', 'sale'] as $type) {
 
-            $formValues[$type.'Contact'] = ${$type.'Contact'} = null;
+            $formValues[$type . 'Contact'] = ${$type . 'Contact'} = null;
 
-            if (isset($requestValues[$type.'Contact'])) {
-                ${$type.'Contact'} = $contactRepository->find($requestValues[$type.'Contact']['id']);
-                $formValues[$type.'Contact'] = is_null(${$type.'Contact'}) ? null : ${$type.'Contact'}->getId();
+            if (isset($requestValues[$type . 'Contact'])) {
+                ${$type . 'Contact'} = $contactRepository->find($requestValues[$type . 'Contact']['id']);
+                $formValues[$type . 'Contact'] = is_null(${$type . 'Contact'}) ? null : ${$type . 'Contact'}->getId();
             }
         }
 
@@ -175,51 +178,51 @@ class UserGameController extends FOSRestController
             foreach (['purchase', 'sale'] as $type) {
 
                 // Contact
-                if (is_null($formValues[$type.'Contact']) && isset($requestValues[$type.'Contact'])) {
+                if (is_null($formValues[$type . 'Contact']) && isset($requestValues[$type . 'Contact'])) {
 
                     // Form Contact
                     $formContact = $this->createForm(ContactType::class);
-                    unset($requestValues[$type.'Contact']['id']);
-                    $formContact->submit($requestValues[$type.'Contact']); // Validation des données
+                    unset($requestValues[$type . 'Contact']['id']);
+                    $formContact->submit($requestValues[$type . 'Contact']); // Validation des données
 
                     if ($formContact->isValid()) {
                         $contact = new Contact();
-                        $contact->setEmail($requestValues[$type.'Contact']['email']);
-                        $contact->setFirstName($requestValues[$type.'Contact']['firstName']);
-                        $contact->setLastName($requestValues[$type.'Contact']['lastName']);
-                        $contact->setNickname($requestValues[$type.'Contact']['nickname']);
-                        $contact->setPhone($requestValues[$type.'Contact']['phone']);
-                        $contact->setAddress($requestValues[$type.'Contact']['address']);
-                        $contact->setZipcode($requestValues[$type.'Contact']['zipcode']);
-                        $contact->setCity($requestValues[$type.'Contact']['city']);
+                        $contact->setEmail($requestValues[$type . 'Contact']['email']);
+                        $contact->setFirstName($requestValues[$type . 'Contact']['firstName']);
+                        $contact->setLastName($requestValues[$type . 'Contact']['lastName']);
+                        $contact->setNickname($requestValues[$type . 'Contact']['nickname']);
+                        $contact->setPhone($requestValues[$type . 'Contact']['phone']);
+                        $contact->setAddress($requestValues[$type . 'Contact']['address']);
+                        $contact->setZipcode($requestValues[$type . 'Contact']['zipcode']);
+                        $contact->setCity($requestValues[$type . 'Contact']['city']);
 
                         $em->persist($contact);
                         $em->flush();
 
-                        ${$type.'Contact'} = $contact;
+                        ${$type . 'Contact'} = $contact;
                     } else {
                         return $formContact;
                     }
                 }
 
-                $method = 'set'.ucfirst($type).'Contact';
-                $userGame->$method(${$type.'Contact'});
+                $method = 'set' . ucfirst($type) . 'Contact';
+                $userGame->$method(${$type . 'Contact'});
 
                 // Place
-                if (isset($requestValues[$type.'Place'])) {
-                    $method = 'set'.ucfirst($type).'Place';
-                    $userGame->$method($requestValues[$type.'Place']);
+                if (isset($requestValues[$type . 'Place'])) {
+                    $method = 'set' . ucfirst($type) . 'Place';
+                    $userGame->$method($requestValues[$type . 'Place']);
                 }
 
                 // Date
-                if (isset($requestValues[$type.'Date'])) {
-                    $date = is_null($requestValues[$type.'Date']) ? null : new \DateTime($requestValues[$type.'Date']);
-                    $method = 'set'.ucfirst($type).'Date';
+                if (isset($requestValues[$type . 'Date'])) {
+                    $date = is_null($requestValues[$type . 'Date']) ? null : new \DateTime($requestValues[$type . 'Date']);
+                    $method = 'set' . ucfirst($type) . 'Date';
                     $userGame->$method($date);
                 }
             }
 
-            $userGame->setUser($this->getUser());
+            $userGame->setUser(/** @scrutinizer ignore-type */ $this->getUser());
             $userGame->setGame($game);
             $userGame->setPlatform($platform);
 
@@ -258,9 +261,9 @@ class UserGameController extends FOSRestController
         $userGameReleaseDate = false;
 
         foreach (['screenshot', 'video',
-                        'developer', 'publisher',
-                        'mode', 'theme', 'genre'
-                    ] as $type) {
+                     'developer', 'publisher',
+                     'mode', 'theme', 'genre'
+                 ] as $type) {
             foreach ($game->{'get' . ucfirst($type) . 's'}() as $obj) {
                 $game->{'remove' . ucfirst($type)}($obj);
             }
@@ -351,45 +354,40 @@ class UserGameController extends FOSRestController
         $companyRepository = $this->getDoctrine()->getRepository('GameBundle:Company');
 
         if (isset($igdbGame->involved_companies)) {
-            $addedDevelopers = [];
-            $addedPublishers = [];
             foreach ($igdbGame->involved_companies as $igdbCompany) {
-                if (($igdbCompany->developer && !in_array($igdbCompany->company->id, $addedDevelopers))
-                     || ($igdbCompany->publisher && !in_array($igdbCompany->company->id, $addedPublishers))) {
-                    $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
-                    if (is_null($company)) {
-                        $company = new Company();
-                        $company->setIgdbId($igdbCompany->company->id);
+                /** @scrutinizer ignore-call */
+                $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
+                if (is_null($company)) {
+                    $company = new Company();
+                    $company->setIgdbId($igdbCompany->company->id);
 
-                        $company->setName($igdbCompany->company->name);
-                        $company->setIgdbUrl($igdbCompany->company->url);
+                    $company->setName($igdbCompany->company->name);
+                    $company->setIgdbUrl($igdbCompany->company->url);
 
-                        $em->persist($company);
-                        $em->flush();
-                    }
+                    $em->persist($company);
+                    $em->flush();
+                }
 
-                    if ($igdbCompany->developer) {
-                        $game->addDeveloper($company);
-                        $addedDevelopers[] = $igdbCompany->company->id;
-                    } elseif ($igdbCompany->publisher) {
-                        $game->addPublisher($company);
-                        $addedPublishers[] = $igdbCompany->company->id;
-                    }
+                if ($igdbCompany->developer) {
+                    $game->addDeveloper($company);
+                } elseif ($igdbCompany->publisher) {
+                    $game->addPublisher($company);
                 }
             }
         }
 
         foreach (['mode', 'theme', 'genre'] as $type) {
-            $igdbType = $type == 'mode' ? 'game_'.$type : $type;
+            $igdbType = $type == 'mode' ? 'game_' . $type : $type;
 
-            if (isset($igdbGame->{$igdbType.'s'})) {
+            if (isset($igdbGame->{$igdbType . 's'})) {
 
-                foreach ($igdbGame->{$igdbType.'s'} as $igdbTag) {
-                    $tagRepository = $this->getDoctrine()->getRepository('GameBundle:'.ucfirst($type));
+                foreach ($igdbGame->{$igdbType . 's'} as $igdbTag) {
+                    $tagRepository = $this->getDoctrine()->getRepository('GameBundle:' . ucfirst($type));
+                    /** @scrutinizer ignore-call */
                     $tag = $tagRepository->findOneByIgdbId($igdbTag->id);
                     if (is_null($tag)) {
 
-                        $class = "GameBundle\\Entity\\".ucfirst($type);
+                        $class = "GameBundle\\Entity\\" . ucfirst($type);
                         $tag = new $class();
                         $tag->setIgdbId($igdbTag->id);
 
@@ -400,7 +398,7 @@ class UserGameController extends FOSRestController
                         $em->flush();
                     }
 
-                    $method = 'add'.ucfirst($type);
+                    $method = 'add' . ucfirst($type);
                     $game->$method($tag);
                 }
             }
@@ -443,7 +441,7 @@ class UserGameController extends FOSRestController
         $count = $gameRepository->countByIgdbUpdate(false);
         $total = $gameRepository->countAll();
         $t1 = microtime(true);
-        $message = count($games).' game(s) updated, '.$count.'/'.$total.' remaining ('.round($t1 - $t0, 3).'s)';
+        $message = count($games) . ' game(s) updated, ' . $count . '/' . $total . ' remaining (' . round($t1 - $t0, 3) . 's)';
         return View::create(['message' => $message], Response::HTTP_OK);
     }
 
@@ -459,7 +457,7 @@ class UserGameController extends FOSRestController
 
         ini_set('max_execution_time', 0);
 
-        $csvFile = $this->container->get('kernel')->getRootDir().'/../var/csv/VGC_Series.csv';
+        $csvFile = $this->container->get('kernel')->getRootDir() . '/../var/csv/VGC_Series.csv';
         $row = 0;
 
         if (($handle = fopen($csvFile, 'r')) !== FALSE) {
@@ -540,7 +538,7 @@ class UserGameController extends FOSRestController
 
             fclose($handle);
 
-            return View::create(['message' => $gamesUpdated.' game(s) updated'], Response::HTTP_OK);
+            return View::create(['message' => $gamesUpdated . ' game(s) updated'], Response::HTTP_OK);
         } else {
             throw new HttpException(404, "Series CSV File Not Found");
         }
@@ -614,8 +612,9 @@ class UserGameController extends FOSRestController
      */
     public function getPlacesAction()
     {
+        /** @var UserGameRepository $userGameRepository */
         $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        $places = $userGameRepository->userPlaces($this->getUser());
+        $places = $userGameRepository->userPlaces(/** @scrutinizer ignore-type */ $this->getUser());
 
         return $places;
     }

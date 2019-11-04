@@ -9,11 +9,11 @@
 namespace GameBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use GameBundle\Entity\Platform;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class IgdbController extends FOSRestController
+class IgdbController extends AbstractFOSRestController
 {
     /**
      * @Rest\View
@@ -67,6 +67,7 @@ class IgdbController extends FOSRestController
                     $igdbGamePlatforms[] = $platforms[$igdbPlatform->id];
                 } else {
                     $platformRepository = $this->getDoctrine()->getRepository('GameBundle:Platform');
+                    /** @scrutinizer ignore-call */
                     $platform = $platformRepository->findOneByIgdbId($igdbPlatform->id);
 
                     if (is_null($platform)) {

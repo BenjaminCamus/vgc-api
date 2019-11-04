@@ -532,7 +532,7 @@ class UserGame extends BaseCreateUpdate
      *
      * @param Platform $platform
      *
-     * @return Game
+     * @return UserGame
      */
     public function setPlatform(Platform $platform)
     {

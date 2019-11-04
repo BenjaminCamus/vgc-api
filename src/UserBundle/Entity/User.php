@@ -1,6 +1,7 @@
 <?php
 namespace UserBundle\Entity;
 
+use DateTime;
 use FOS\UserBundle\Model\User as BaseUser;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -41,7 +42,7 @@ class User extends BaseUser
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -51,9 +52,9 @@ class User extends BaseUser
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      *
-     * @return Game
+     * @return User
      */
     public function setCreatedAt($createdAt)
     {
@@ -65,7 +66,7 @@ class User extends BaseUser
     /**
      * Get updatedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {
@@ -75,9 +76,9 @@ class User extends BaseUser
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      *
-     * @return Game
+     * @return User
      */
     public function setUpdatedAt($updatedAt)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace GameBundle\Admin;
 
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -10,7 +11,11 @@ class VideoAdmin extends AbstractAdmin
 {
     protected function configureRoutes(RouteCollection $collection)
     {
-        $collection->remove('create', 'edit', 'delete', 'show');
+        $collection
+            ->remove('create')
+            ->remove('edit')
+            ->remove('delete')
+            ->remove('show');
     }
 
     /**
