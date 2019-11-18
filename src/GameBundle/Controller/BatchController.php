@@ -173,9 +173,9 @@ class BatchController extends AbstractFOSRestController
 
     /**
      * @Rest\View
-     * @Rest\Get("/batch/games/videos")
+     * @Rest\Get("/batch/games/update")
      */
-    public function updateVideosAction()
+    public function updateGamesAction()
     {
         if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
             throw new HttpException(403, "Super Admin Only");
@@ -194,7 +194,6 @@ class BatchController extends AbstractFOSRestController
 
         /** @var Game $game */
         foreach ($games as $game) {
-            dump($game->getScreenshots()->count());
             $igdbService = $this->container->get('igdb');
             $igdbService->update($game->getIgdbId());
         }

@@ -1,10 +1,13 @@
 <?php
+
 namespace GameBundle\Services;
 
 use Doctrine\ORM\EntityManager;
 use GameBundle\Entity\Company;
 use GameBundle\Entity\Game;
 use GameBundle\Entity\Image;
+use GameBundle\Entity\Platform;
+use GameBundle\Entity\ReleaseDate;
 use GameBundle\Entity\Video;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Unirest;
@@ -23,7 +26,7 @@ class IGDB
 
     public function get($id)
     {
-        $param = 'where id='.$id.';';
+        $param = 'where id=' . $id . ';';
         return $this->response($param);
     }
 
@@ -64,7 +67,7 @@ class IGDB
             . 'limit 30;'
             . $param;
 
-        $response = Unirest\Request::post(self::IGDB_URL.'games',
+        $response = Unirest\Request::post(self::IGDB_URL . 'games',
             array(
                 'user-key' => $this->igdbKey,
                 'Accept' => 'application/json'
@@ -81,13 +84,15 @@ class IGDB
 
     public function search($search)
     {
-        $param = 'search "'.addslashes($search).'";';
+        $param = 'search "' . addslashes($search) . '";';
         return $this->response($param);
     }
 
     public function update($id)
     {
         $gameRepository = $this->em->getRepository('GameBundle:Game');
+        $platformRepository = $this->em->getRepository('GameBundle:Platform');
+
         /** @scrutinizer ignore-call */
         $game = $gameRepository->findOneByIgdbId($id);
 
@@ -97,10 +102,7 @@ class IGDB
 
         $userGameReleaseDate = false;
 
-        foreach (['screenshot', 'video',
-                     'developer', 'publisher',
-                     'mode', 'theme', 'genre'
-                 ] as $type) {
+        foreach (['screenshot', 'video', 'developer', 'publisher', 'mode', 'theme', 'genre', 'releaseDate'] as $type) {
             foreach ($game->{'get' . ucfirst($type) . 's'}() as $obj) {
                 $game->{'remove' . ucfirst($type)}($obj);
             }
@@ -124,20 +126,6 @@ class IGDB
         $game->setIgdbUrl($igdbGame->url);
         $game->setIgdbCreatedAt(new \DateTime(date('Y-m-d H:i:s', ($igdbGame->created_at / 1000))));
         $game->setIgdbUpdatedAt(new \DateTime(date('Y-m-d H:i:s', ($igdbGame->updated_at / 1000))));
-
-//        if ($igdbGame->release_dates) {
-//
-//            $dates = [];
-//            foreach ($igdbGame->release_dates as $releaseDate) {
-//                if ($releaseDate->platform == $platformIgdbId) {
-//                    $dates[] = $releaseDate->date;
-//                }
-//            }
-//
-//            if (count($dates) > 0) {
-//                $userGameReleaseDate = new \DateTime(date('Y-m-d H:i:s', (min($dates))), new \DateTimeZone('UTC'));
-//            }
-//        }
 
         // TODO: cover + screenshots(ajouter images si absentes, recherche avec url)
         // TODO: rendre image->url unique
@@ -178,6 +166,24 @@ class IGDB
                     $video->setYoutubeId($igdbVideo->video_id);
                     $this->em->persist($video);
                     $game->addVideo($video);
+                }
+            }
+        }
+
+        // Save Release Dates
+        if (isset($igdbGame->release_dates)) {
+            foreach ($igdbGame->release_dates as $igdbReleaseDate) {
+                if (is_object($igdbReleaseDate)) {
+                    /** @scrutinizer ignore-call */
+                    /** @var Platform $platform */
+                    $platform = $platformRepository->findOneByIgdbId($igdbReleaseDate->platform);
+                    if (null !== $platform) {
+                        $releaseDate = new ReleaseDate();
+                        $releaseDate->setGame($game);
+                        $releaseDate->setPlatform($platform);
+                        $releaseDate->setDate(new \DateTime(date('Y-m-d H:i:s', $igdbReleaseDate->date)));
+                        $this->em->persist($releaseDate);
+                    }
                 }
             }
         }
