@@ -192,9 +192,11 @@ class BatchController extends AbstractFOSRestController
             'igdbUpdate' => false
         ], [], $limit);
 
+        /** @var Game $game */
         foreach ($games as $game) {
-
-            $this->igdbGame($game);
+            dump($game->getScreenshots()->count());
+            $igdbService = $this->container->get('igdb');
+            $igdbService->update($game->getIgdbId());
         }
 
         $count = $gameRepository->countByIgdbUpdate(false);

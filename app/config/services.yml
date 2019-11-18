@@ -7,6 +7,7 @@ services:
     igdb:
         class: GameBundle\Services\IGDB
         arguments:
+          $em: '@doctrine.orm.entity_manager'
           $igdbKey: '%igdb_key%'
 
     my_success_handler:

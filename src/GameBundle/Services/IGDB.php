@@ -1,15 +1,23 @@
 <?php
 namespace GameBundle\Services;
 
+use Doctrine\ORM\EntityManager;
+use GameBundle\Entity\Company;
+use GameBundle\Entity\Game;
+use GameBundle\Entity\Image;
+use GameBundle\Entity\Video;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Unirest;
 
 class IGDB
 {
     const IGDB_URL = 'https://api-v3.igdb.com/';
+    private $em;
     private $igdbKey;
 
-    public function __construct($igdbKey)
+    public function __construct(EntityManager $em, $igdbKey)
     {
+        $this->em = $em;
         $this->igdbKey = $igdbKey;
     }
 
@@ -75,5 +83,160 @@ class IGDB
     {
         $param = 'search "'.addslashes($search).'";';
         return $this->response($param);
+    }
+
+    public function update($id)
+    {
+        $gameRepository = $this->em->getRepository('GameBundle:Game');
+        /** @scrutinizer ignore-call */
+        $game = $gameRepository->findOneByIgdbId($id);
+
+        if (null === $game) {
+            $game = new Game();
+        }
+
+        $userGameReleaseDate = false;
+
+        foreach (['screenshot', 'video',
+                     'developer', 'publisher',
+                     'mode', 'theme', 'genre'
+                 ] as $type) {
+            foreach ($game->{'get' . ucfirst($type) . 's'}() as $obj) {
+                $game->{'remove' . ucfirst($type)}($obj);
+            }
+        }
+
+        // Get IGDB game
+        $igdb = $this->get($game->getIgdbId());
+
+        if (!isset($igdb[0])) {
+            throw new HttpException(404, "IGDB Game Not Found");
+        }
+
+        $igdbGame = $igdb[0];
+
+        // Game fields
+        $game->setName($igdbGame->name);
+        $totalRating = isset($igdbGame->total_rating) ? $igdbGame->total_rating : 0;
+        $game->setRating(round($totalRating / 100 * 20, 2));
+        $totalRatingCount = isset($igdbGame->total_rating_count) ? $igdbGame->total_rating_count : 0;
+        $game->setRatingCount($totalRatingCount);
+        $game->setIgdbUrl($igdbGame->url);
+        $game->setIgdbCreatedAt(new \DateTime(date('Y-m-d H:i:s', ($igdbGame->created_at / 1000))));
+        $game->setIgdbUpdatedAt(new \DateTime(date('Y-m-d H:i:s', ($igdbGame->updated_at / 1000))));
+
+//        if ($igdbGame->release_dates) {
+//
+//            $dates = [];
+//            foreach ($igdbGame->release_dates as $releaseDate) {
+//                if ($releaseDate->platform == $platformIgdbId) {
+//                    $dates[] = $releaseDate->date;
+//                }
+//            }
+//
+//            if (count($dates) > 0) {
+//                $userGameReleaseDate = new \DateTime(date('Y-m-d H:i:s', (min($dates))), new \DateTimeZone('UTC'));
+//            }
+//        }
+
+        // TODO: cover + screenshots(ajouter images si absentes, recherche avec url)
+        // TODO: rendre image->url unique
+        // Save cover Image
+        $cover = $game->getCover();
+        if (null === $cover) {
+            $cover = new Image();
+        }
+        $cover->setUrl($igdbGame->cover->url);
+        $cover->setCloudinaryId($igdbGame->cover->image_id);
+        $cover->setWidth($igdbGame->cover->width);
+        $cover->setHeight($igdbGame->cover->height);
+        $this->em->persist($cover);
+
+        $game->setCover($cover);
+
+        // Save screenshots Images
+        if (isset($igdbGame->screenshots)) {
+            foreach ($igdbGame->screenshots as $igdbScreenshot) {
+                if (is_object($igdbScreenshot)) {
+                    $screenshot = new Image();
+                    $screenshot->setUrl($igdbScreenshot->url);
+                    $screenshot->setCloudinaryId($igdbScreenshot->image_id);
+                    $screenshot->setWidth($igdbScreenshot->width);
+                    $screenshot->setHeight($igdbScreenshot->height);
+                    $this->em->persist($screenshot);
+                    $game->addScreenshot($screenshot);
+                }
+            }
+        }
+
+        // Save Videos
+        if (isset($igdbGame->videos)) {
+            foreach ($igdbGame->videos as $igdbVideo) {
+                if (is_object($igdbVideo)) {
+                    $video = new Video();
+                    $video->setName($igdbVideo->name);
+                    $video->setYoutubeId($igdbVideo->video_id);
+                    $this->em->persist($video);
+                    $game->addVideo($video);
+                }
+            }
+        }
+
+
+        // Series
+        // TODO: notify admin to set Series
+
+        // Companies
+        $companyRepository = $this->em->getRepository('GameBundle:Company');
+
+        if (isset($igdbGame->involved_companies)) {
+            foreach ($igdbGame->involved_companies as $igdbCompany) {
+                /** @scrutinizer ignore-call */
+                $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
+                if (is_null($company)) {
+                    $company = new Company();
+                }
+                $company->setIgdbId($igdbCompany->company->id);
+                $company->setName($igdbCompany->company->name);
+                $company->setIgdbUrl($igdbCompany->company->url);
+                $this->em->persist($company);
+
+                if ($igdbCompany->developer) {
+                    $game->addDeveloper($company);
+                } elseif ($igdbCompany->publisher) {
+                    $game->addPublisher($company);
+                }
+            }
+        }
+
+        foreach (['mode', 'theme', 'genre'] as $type) {
+            $igdbType = $type == 'mode' ? 'game_' . $type : $type;
+
+            if (isset($igdbGame->{$igdbType . 's'})) {
+
+                foreach ($igdbGame->{$igdbType . 's'} as $igdbTag) {
+                    $tagRepository = $this->em->getRepository('GameBundle:' . ucfirst($type));
+                    /** @scrutinizer ignore-call */
+                    $tag = $tagRepository->findOneByIgdbId($igdbTag->id);
+                    if (is_null($tag)) {
+                        $class = "GameBundle\\Entity\\" . ucfirst($type);
+                        $tag = new $class();
+                    }
+                    $tag->setIgdbId($igdbTag->id);
+                    $tag->setName($igdbTag->name);
+                    $tag->setIgdbUrl($igdbTag->url);
+                    $this->em->persist($tag);
+                    $method = 'add' . ucfirst($type);
+                    $game->$method($tag);
+                }
+            }
+        }
+
+        $game->setIgdbUpdate(true);
+
+        $this->em->persist($game);
+        $this->em->flush();
+
+        return $game;
     }
 }
