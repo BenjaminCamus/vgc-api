@@ -102,7 +102,7 @@ class IGDB
 
         $userGameReleaseDate = false;
 
-        foreach (['screenshot', 'video', 'developer', 'publisher', 'mode', 'theme', 'genre', 'releaseDate'] as $type) {
+        foreach (['screenshot', 'video', 'developer', 'publisher', 'mode', 'theme', 'genre'] as $type) {
             foreach ($game->{'get' . ucfirst($type) . 's'}() as $obj) {
                 $game->{'remove' . ucfirst($type)}($obj);
             }
@@ -168,6 +168,10 @@ class IGDB
                     $game->addVideo($video);
                 }
             }
+        }
+
+        foreach ($game->getReleaseDates() as $releaseDate) {
+            $this->em->remove($releaseDate);
         }
 
         // Save Release Dates

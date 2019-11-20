@@ -578,15 +578,10 @@ class Game extends BaseObject
     /**
      * Get release dates
      *
-     * @return array
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getReleaseDates()
     {
-        $releaseDates = [];
-        /** @var ReleaseDate $releaseDate */
-        foreach ($this->releaseDates as $releaseDate) {
-            $releaseDates[$releaseDate->getPlatform()->getId()] = $releaseDate;
-        }
-        return $releaseDates;
+        return $this->releaseDates;
     }
 }
