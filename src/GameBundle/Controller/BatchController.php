@@ -13,7 +13,41 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class BatchController extends AbstractFOSRestController
 {
 
+    const IGDB_UPDATE_LIMIT = 100;
     const SERIES_FILE = 'VGC_Series.csv';
+
+    /**
+     * @Rest\View
+     * @Rest\Get("/batch/games/update")
+     */
+    public function updateGamesAction()
+    {
+        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
+            throw new HttpException(403, "Super Admin Only");
+        }
+
+        ini_set('max_execution_time', 0);
+
+        $t0 = microtime(true);
+
+        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+
+        $games = $gameRepository->findBy([
+            'igdbUpdate' => false
+        ], [], self::IGDB_UPDATE_LIMIT);
+
+        /** @var Game $game */
+        foreach ($games as $game) {
+            $igdbService = $this->container->get('igdb');
+            $igdbService->update($game->getIgdbId());
+        }
+
+        $count = $gameRepository->countByIgdbUpdate(false);
+        $total = $gameRepository->countAll();
+        $t1 = microtime(true);
+        $message = count($games) . ' game(s) updated, ' . $count . '/' . $total . ' remaining (' . round($t1 - $t0, 3) . 's)';
+        return View::create(['message' => $message], Response::HTTP_OK);
+    }
 
     /**
      * Return series CSV file's path
@@ -172,39 +206,5 @@ class BatchController extends AbstractFOSRestController
         } else {
             throw new HttpException(404, "Series CSV File Not Found");
         }
-    }
-
-    /**
-     * @Rest\View
-     * @Rest\Get("/batch/games/update")
-     */
-    public function updateGamesAction()
-    {
-        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
-            throw new HttpException(403, "Super Admin Only");
-        }
-
-        ini_set('max_execution_time', 0);
-
-        $t0 = microtime(true);
-
-        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
-        $limit = 20;
-
-        $games = $gameRepository->findBy([
-            'igdbUpdate' => false
-        ], [], $limit);
-
-        /** @var Game $game */
-        foreach ($games as $game) {
-            $igdbService = $this->container->get('igdb');
-            $igdbService->update($game->getIgdbId());
-        }
-
-        $count = $gameRepository->countByIgdbUpdate(false);
-        $total = $gameRepository->countAll();
-        $t1 = microtime(true);
-        $message = count($games) . ' game(s) updated, ' . $count . '/' . $total . ' remaining (' . round($t1 - $t0, 3) . 's)';
-        return View::create(['message' => $message], Response::HTTP_OK);
     }
 }
