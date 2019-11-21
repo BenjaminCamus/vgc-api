@@ -100,8 +100,6 @@ class IGDB
             $game = new Game();
         }
 
-        $userGameReleaseDate = false;
-
         foreach (['screenshot', 'video', 'developer', 'publisher', 'mode', 'theme', 'genre'] as $type) {
             foreach ($game->{'get' . ucfirst($type) . 's'}() as $obj) {
                 $game->{'remove' . ucfirst($type)}($obj);
@@ -191,7 +189,6 @@ class IGDB
                 }
             }
         }
-
 
         // Series
         // TODO: notify admin to set Series
