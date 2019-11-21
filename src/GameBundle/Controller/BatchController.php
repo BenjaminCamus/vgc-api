@@ -66,12 +66,15 @@ class BatchController extends AbstractFOSRestController
             mkdir($dir, 0755,true);
         }
         $fp = fopen($dir.self::SERIES_FILE, 'w');
-        foreach ($csv as $csvLine) {
-            fputcsv($fp, $csvLine);
-        }
-        fclose($fp);
+        if ($fp !== false) {
+            foreach ($csv as $csvLine) {
+                fputcsv($fp, $csvLine);
+            }
+            fclose($fp);
 
-        return $csv;
+            return $csv;
+        }
+        return false;
     }
 
     /**
