@@ -18,6 +18,28 @@ class BatchController extends AbstractFOSRestController
 
     /**
      * @Rest\View
+     * @Rest\Get("/batch/games/update/reset")
+     */
+    public function updateGamesResetAction()
+    {
+        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
+            throw new HttpException(403, "Super Admin Only");
+        }
+
+        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+
+        $games = $gameRepository->findAll();
+
+        foreach ($games as $game) {
+            $game->setIgdbUpdate(false);
+        }
+
+        $message = count($games) . ' game(s) resetted';
+        return View::create(['message' => $message], Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\View
      * @Rest\Get("/batch/games/update")
      */
     public function updateGamesAction()
@@ -36,11 +58,11 @@ class BatchController extends AbstractFOSRestController
             'igdbUpdate' => false
         ], [], self::IGDB_UPDATE_LIMIT);
 
-        /** @var Game $game */
         foreach ($games as $game) {
             $igdbService = $this->container->get('igdb');
             $igdbService->update($game->getIgdbId());
         }
+        $this->getDoctrine()->getManager()->flush();
 
         $count = $gameRepository->countByIgdbUpdate(false);
         $total = $gameRepository->countAll();
@@ -72,7 +94,7 @@ class BatchController extends AbstractFOSRestController
         $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
         $csv = [];
         $seriesMax = 0;
-        /** @var Game $game */
+
         foreach ($gameRepository->findBy([], ['name' => 'asc']) as $game) {
             $gameSeries = [];
             /** @var Series $series */
@@ -182,7 +204,6 @@ class BatchController extends AbstractFOSRestController
                                     $series = new Series();
                                     $series->setName($seriesName);
                                     $em->persist($series);
-                                    $em->flush();
                                 }
 
                                 $game->addSeries($series);
@@ -192,7 +213,6 @@ class BatchController extends AbstractFOSRestController
 
                             // Sauvegarde du jeu
                             $em->persist($game);
-                            $em->flush();
                         }
                     }
                 }
@@ -200,6 +220,7 @@ class BatchController extends AbstractFOSRestController
                 $row++;
             }
 
+            $em->flush();
             fclose($handle);
 
             return View::create(['message' => $gamesUpdated . ' game(s) updated'], Response::HTTP_OK);

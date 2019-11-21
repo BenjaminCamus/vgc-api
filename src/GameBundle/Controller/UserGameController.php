@@ -179,7 +179,6 @@ class UserGameController extends AbstractFOSRestController
                         $contact->setCity($requestValues[$type . 'Contact']['city']);
 
                         $em->persist($contact);
-                        $em->flush();
 
                         ${$type . 'Contact'} = $contact;
                     } else {

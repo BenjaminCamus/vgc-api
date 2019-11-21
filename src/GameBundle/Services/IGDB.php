@@ -242,7 +242,6 @@ class IGDB
         $game->setIgdbUpdate(true);
 
         $this->em->persist($game);
-        $this->em->flush();
 
         return $game;
     }
