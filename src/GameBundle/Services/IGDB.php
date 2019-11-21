@@ -137,6 +137,7 @@ class IGDB
         $cover->setWidth($igdbGame->cover->width);
         $cover->setHeight($igdbGame->cover->height);
         $this->em->persist($cover);
+        $this->em->flush();
 
         $game->setCover($cover);
 
@@ -175,7 +176,7 @@ class IGDB
         // Save Release Dates
         if (isset($igdbGame->release_dates)) {
             foreach ($igdbGame->release_dates as $igdbReleaseDate) {
-                if (is_object($igdbReleaseDate)) {
+                if (is_object($igdbReleaseDate) && property_exists($igdbReleaseDate, 'date')) {
                     /** @scrutinizer ignore-call */
                     /** @var Platform $platform */
                     $platform = $platformRepository->findOneByIgdbId($igdbReleaseDate->platform);
@@ -185,6 +186,7 @@ class IGDB
                         $releaseDate->setPlatform($platform);
                         $releaseDate->setDate(new \DateTime(date('Y-m-d H:i:s', $igdbReleaseDate->date)));
                         $this->em->persist($releaseDate);
+                        $this->em->flush();
                     }
                 }
             }
@@ -202,11 +204,12 @@ class IGDB
                 $company = $companyRepository->findOneByIgdbId($igdbCompany->company->id);
                 if (is_null($company)) {
                     $company = new Company();
+                    $company->setIgdbId($igdbCompany->company->id);
+                    $company->setName($igdbCompany->company->name);
+                    $company->setIgdbUrl($igdbCompany->company->url);
+                    $this->em->persist($company);
+                    $this->em->flush();
                 }
-                $company->setIgdbId($igdbCompany->company->id);
-                $company->setName($igdbCompany->company->name);
-                $company->setIgdbUrl($igdbCompany->company->url);
-                $this->em->persist($company);
 
                 if ($igdbCompany->developer) {
                     $game->addDeveloper($company);
@@ -228,11 +231,12 @@ class IGDB
                     if (is_null($tag)) {
                         $class = "GameBundle\\Entity\\" . ucfirst($type);
                         $tag = new $class();
+                        $tag->setIgdbId($igdbTag->id);
+                        $tag->setName($igdbTag->name);
+                        $tag->setIgdbUrl($igdbTag->url);
+                        $this->em->persist($tag);
+                        $this->em->flush();
                     }
-                    $tag->setIgdbId($igdbTag->id);
-                    $tag->setName($igdbTag->name);
-                    $tag->setIgdbUrl($igdbTag->url);
-                    $this->em->persist($tag);
                     $method = 'add' . ucfirst($type);
                     $game->$method($tag);
                 }
