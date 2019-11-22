@@ -79,7 +79,6 @@ class IgdbController extends AbstractFOSRestController
                         $platform->setIgdbUrl($igdbPlatform->url);
 
                         $em->persist($platform);
-                        $em->flush();
                     }
 
                     $igdbPlatform = new \stdClass();
@@ -95,6 +94,8 @@ class IgdbController extends AbstractFOSRestController
             $igdbGame->platforms = $igdbGamePlatforms;
             $returnGames[] = $igdbGame;
         }
+
+        $em->flush();
 
         return new JsonResponse($returnGames);
     }

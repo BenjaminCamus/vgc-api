@@ -108,6 +108,11 @@ class Game extends BaseObject
     private $genres;
 
     /**
+     * @ORM\OneToMany(targetEntity="ReleaseDate", mappedBy="game")
+     */
+    private $releaseDates;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -568,5 +573,15 @@ class Game extends BaseObject
     public function getGenres()
     {
         return $this->genres;
+    }
+
+    /**
+     * Get release dates
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReleaseDates()
+    {
+        return $this->releaseDates;
     }
 }

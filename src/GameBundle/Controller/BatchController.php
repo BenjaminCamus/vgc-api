@@ -5,7 +5,6 @@ namespace GameBundle\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use GameBundle\Entity\Game;
 use GameBundle\Entity\Series;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -13,7 +12,65 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class BatchController extends AbstractFOSRestController
 {
 
+    const IGDB_UPDATE_LIMIT = 50;
     const SERIES_FILE = 'VGC_Series.csv';
+
+    /**
+     * @Rest\View
+     * @Rest\Get("/batch/games/update/reset")
+     */
+    public function updateGamesResetAction()
+    {
+        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
+            throw new HttpException(403, "Super Admin Only");
+        }
+
+        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+
+        $games = $gameRepository->findBy(['igdbUpdate' => true]);
+
+        foreach ($games as $game) {
+            $game->setIgdbUpdate(false);
+            $this->getDoctrine()->getManager()->persist($game);
+        }
+        $this->getDoctrine()->getManager()->flush();
+
+        $message = count($games) . ' game(s) resetted';
+        return View::create(['message' => $message], Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\View
+     * @Rest\Get("/batch/games/update")
+     */
+    public function updateGamesAction()
+    {
+        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
+            throw new HttpException(403, "Super Admin Only");
+        }
+
+        ini_set('max_execution_time', 0);
+
+        $t0 = microtime(true);
+
+        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
+
+        $games = $gameRepository->findBy([
+            'igdbUpdate' => false
+        ], [], self::IGDB_UPDATE_LIMIT);
+
+        foreach ($games as $game) {
+            $igdbService = $this->container->get('igdb');
+            $igdbService->update($game->getIgdbId());
+        }
+        $this->getDoctrine()->getManager()->flush();
+
+        $count = $gameRepository->countByIgdbUpdate(false);
+        $total = $gameRepository->countAll();
+        $t1 = microtime(true);
+        $message = count($games) . ' game(s) updated, ' . $count . '/' . $total . ' remaining (' . round($t1 - $t0, 3) . 's)';
+        return View::create(['message' => $message], Response::HTTP_OK);
+    }
 
     /**
      * Return series CSV file's path
@@ -38,7 +95,7 @@ class BatchController extends AbstractFOSRestController
         $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
         $csv = [];
         $seriesMax = 0;
-        /** @var Game $game */
+
         foreach ($gameRepository->findBy([], ['name' => 'asc']) as $game) {
             $gameSeries = [];
             /** @var Series $series */
@@ -66,12 +123,15 @@ class BatchController extends AbstractFOSRestController
             mkdir($dir, 0755,true);
         }
         $fp = fopen($dir.self::SERIES_FILE, 'w');
-        foreach ($csv as $csvLine) {
-            fputcsv($fp, $csvLine);
-        }
-        fclose($fp);
+        if ($fp !== false) {
+            foreach ($csv as $csvLine) {
+                fputcsv($fp, $csvLine);
+            }
+            fclose($fp);
 
-        return $csv;
+            return $csv;
+        }
+        return false;
     }
 
     /**
@@ -145,7 +205,6 @@ class BatchController extends AbstractFOSRestController
                                     $series = new Series();
                                     $series->setName($seriesName);
                                     $em->persist($series);
-                                    $em->flush();
                                 }
 
                                 $game->addSeries($series);
@@ -155,7 +214,6 @@ class BatchController extends AbstractFOSRestController
 
                             // Sauvegarde du jeu
                             $em->persist($game);
-                            $em->flush();
                         }
                     }
                 }
@@ -163,106 +221,12 @@ class BatchController extends AbstractFOSRestController
                 $row++;
             }
 
+            $em->flush();
             fclose($handle);
 
             return View::create(['message' => $gamesUpdated . ' game(s) updated'], Response::HTTP_OK);
         } else {
             throw new HttpException(404, "Series CSV File Not Found");
         }
-    }
-
-    /**
-     * @Rest\View
-     * @Rest\Get("/batch/games/videos")
-     */
-    public function updateVideosAction()
-    {
-        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
-            throw new HttpException(403, "Super Admin Only");
-        }
-
-        ini_set('max_execution_time', 0);
-
-        $t0 = microtime(true);
-
-        $gameRepository = $this->getDoctrine()->getRepository('GameBundle:Game');
-        $limit = 20;
-
-        $games = $gameRepository->findBy([
-            'igdbUpdate' => false
-        ], [], $limit);
-
-        foreach ($games as $game) {
-
-            $this->igdbGame($game);
-        }
-
-        $count = $gameRepository->countByIgdbUpdate(false);
-        $total = $gameRepository->countAll();
-        $t1 = microtime(true);
-        $message = count($games) . ' game(s) updated, ' . $count . '/' . $total . ' remaining (' . round($t1 - $t0, 3) . 's)';
-        return View::create(['message' => $message], Response::HTTP_OK);
-    }
-
-    /**
-     * @Rest\View
-     * @Rest\Get("/batch/release-dates")
-     */
-    public function releaseDatesAction()
-    {
-        if (!in_array('ROLE_SUPER_ADMIN', $this->getUser()->getRoles())) {
-            throw new HttpException(403, "Super Admin Only");
-        }
-
-        ini_set('max_execution_time', 0);
-
-        $results = [];
-
-        $em = $this->getDoctrine()->getManager();
-        $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        $userGames = $userGameRepository->findBy([
-            'releaseDate' => null
-        ], [], 100);
-
-        foreach ($userGames as $userGame) {
-            $result = [
-                'game' => $userGame->getGame()->getName(),
-                'platform' => $userGame->getPlatform()->getName()
-            ];
-
-            $igdbService = $this->container->get('igdb');
-
-            // Get IGDB game
-            $igdb = $igdbService->get($userGame->getGame()->getIgdbId());
-
-            if (!isset($igdb[0])) {
-                $result['error'] = 'NOT FOUND';
-                $results[] = $result;
-                continue;
-            }
-
-            $igdbGame = $igdb[0];
-
-            if ($igdbGame->release_dates) {
-
-                $dates = [];
-                foreach ($igdbGame->release_dates as $releaseDate) {
-                    if ($releaseDate->platform == $userGame->getPlatform()->getIgdbId()) {
-                        $dates[] = $releaseDate->date;
-                    }
-                }
-
-                if (count($dates) > 0) {
-                    $userGameReleaseDate = new \DateTime(date('Y-m-d H:i:s', (min($dates))), new \DateTimeZone('UTC'));
-                    $userGame->setReleaseDate($userGameReleaseDate);
-                    $em->persist($userGame);
-                    $em->flush();
-                }
-            }
-            $result['release date'] = $userGame->getReleaseDate();
-            $results[] = $result;
-        }
-
-        return View::create($results, Response::HTTP_OK);
     }
 }
