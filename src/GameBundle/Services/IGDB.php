@@ -144,7 +144,11 @@ class IGDB
         // Save screenshots Images
         if (isset($igdbGame->screenshots)) {
             foreach ($igdbGame->screenshots as $igdbScreenshot) {
-                if (is_object($igdbScreenshot)) {
+                if (is_object($igdbScreenshot)
+                    && property_exists($igdbScreenshot, 'url')
+                    && property_exists($igdbScreenshot, 'image_id')
+                    && property_exists($igdbScreenshot, 'width')
+                    && property_exists($igdbScreenshot, 'height')) {
                     $screenshot = new Image();
                     $screenshot->setUrl($igdbScreenshot->url);
                     $screenshot->setCloudinaryId($igdbScreenshot->image_id);
@@ -159,7 +163,9 @@ class IGDB
         // Save Videos
         if (isset($igdbGame->videos)) {
             foreach ($igdbGame->videos as $igdbVideo) {
-                if (is_object($igdbVideo)) {
+                if (is_object($igdbVideo)
+                    && property_exists($igdbVideo, 'name')
+                    && property_exists($igdbVideo, 'video_id')) {
                     $video = new Video();
                     $video->setName($igdbVideo->name);
                     $video->setYoutubeId($igdbVideo->video_id);
@@ -178,7 +184,6 @@ class IGDB
             foreach ($igdbGame->release_dates as $igdbReleaseDate) {
                 if (is_object($igdbReleaseDate) && property_exists($igdbReleaseDate, 'date')) {
                     /** @scrutinizer ignore-call */
-                    /** @var Platform $platform */
                     $platform = $platformRepository->findOneByIgdbId($igdbReleaseDate->platform);
                     if (null !== $platform) {
                         $releaseDate = new ReleaseDate();
