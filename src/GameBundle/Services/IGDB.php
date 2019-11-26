@@ -183,11 +183,6 @@ class IGDB
 	    $game->resetReleaseDate();
         }
 
-
-        foreach ($game->getReleaseDates() as $releaseDate) {
-            $this->em->remove($releaseDate);
-        }
-
         // Series
         // TODO: notify admin to set Series
 
