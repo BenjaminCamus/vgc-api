@@ -175,6 +175,14 @@ class IGDB
                 }
             }
         }
+	
+        if (null !== $game->getReleaseDates()) {
+            foreach ($game->getReleaseDates() as $releaseDate) {
+                $this->em->remove($releaseDate);
+            }
+	    $game->resetReleaseDate();
+        }
+
 
         foreach ($game->getReleaseDates() as $releaseDate) {
             $this->em->remove($releaseDate);
@@ -246,6 +254,7 @@ class IGDB
                         $releaseDate->setPlatform($platform);
                         $releaseDate->setDate(new \DateTime(date('Y-m-d H:i:s', $igdbReleaseDate->date)));
                         $this->em->persist($releaseDate);
+			$game->addReleaseDate($releaseDate);
                     }
                 }
             }
