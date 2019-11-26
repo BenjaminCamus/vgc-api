@@ -97,7 +97,8 @@ class IGDB
         $game = $gameRepository->findOneByIgdbId($id);
 
         if (null === $game) {
-            $game = new Game();
+	    $game = new Game();
+	    $game->setIgdbId($id);
         }
 
         foreach (['screenshot', 'video', 'developer', 'publisher', 'mode', 'theme', 'genre'] as $type) {
@@ -109,7 +110,7 @@ class IGDB
         // Get IGDB game
         $igdb = $this->get($game->getIgdbId());
 
-        if (!isset($igdb[0])) {
+	if (!isset($igdb[0])) {
             throw new HttpException(404, "IGDB Game Not Found");
         }
 
@@ -179,24 +180,6 @@ class IGDB
             $this->em->remove($releaseDate);
         }
 
-        // Save Release Dates
-        if (isset($igdbGame->release_dates)) {
-            foreach ($igdbGame->release_dates as $igdbReleaseDate) {
-                if (is_object($igdbReleaseDate) && property_exists($igdbReleaseDate, 'date')) {
-                    /** @scrutinizer ignore-call */
-                    $platform = $platformRepository->findOneByIgdbId($igdbReleaseDate->platform);
-                    if (null !== $platform) {
-                        $releaseDate = new ReleaseDate();
-                        $releaseDate->setGame($game);
-                        $releaseDate->setPlatform($platform);
-                        $releaseDate->setDate(new \DateTime(date('Y-m-d H:i:s', $igdbReleaseDate->date)));
-                        $this->em->persist($releaseDate);
-                        $this->em->flush();
-                    }
-                }
-            }
-        }
-
         // Series
         // TODO: notify admin to set Series
 
@@ -249,8 +232,24 @@ class IGDB
         }
 
         $game->setIgdbUpdate(true);
+	$this->em->persist($game);
 
-        $this->em->persist($game);
+        // Save Release Dates
+        if (isset($igdbGame->release_dates)) {
+            foreach ($igdbGame->release_dates as $igdbReleaseDate) {
+                if (is_object($igdbReleaseDate) && property_exists($igdbReleaseDate, 'date')) {
+                    /** @scrutinizer ignore-call */
+                    $platform = $platformRepository->findOneByIgdbId($igdbReleaseDate->platform);
+                    if (null !== $platform) {
+                        $releaseDate = new ReleaseDate();
+                        $releaseDate->setGame($game);
+                        $releaseDate->setPlatform($platform);
+                        $releaseDate->setDate(new \DateTime(date('Y-m-d H:i:s', $igdbReleaseDate->date)));
+                        $this->em->persist($releaseDate);
+                    }
+                }
+            }
+        }
 
         return $game;
     }
