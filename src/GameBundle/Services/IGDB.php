@@ -175,6 +175,14 @@ class IGDB
                 }
             }
         }
+	
+        if (null !== $game->getReleaseDates()) {
+            foreach ($game->getReleaseDates() as $releaseDate) {
+                $this->em->remove($releaseDate);
+            }
+	    $game->resetReleaseDate();
+        }
+
 
         foreach ($game->getReleaseDates() as $releaseDate) {
             $this->em->remove($releaseDate);
