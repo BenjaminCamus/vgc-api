@@ -580,7 +580,7 @@ class Game extends BaseObject
      *
      * @return Game
      */
-    public function resetReleaseDate(ReleaseDate $releaseDate)
+    public function resetReleaseDate()
     {
         $this->releaseDates = new \Doctrine\Common\Collections\ArrayCollection();
 
