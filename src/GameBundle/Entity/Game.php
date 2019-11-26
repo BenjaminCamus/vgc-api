@@ -576,6 +576,20 @@ class Game extends BaseObject
     }
 
     /**
+     * Add release date
+     *
+     * @param ReleaseDate $releaseDate
+     *
+     * @return Game
+     */
+    public function addReleaseDate(ReleaseDate $releaseDate)
+    {
+        $this->releaseDates[] = $releaseDate;
+
+        return $this;
+    }
+
+    /**
      * Get release dates
      *
      * @return \Doctrine\Common\Collections\Collection
