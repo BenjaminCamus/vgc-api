@@ -246,6 +246,7 @@ class IGDB
                         $releaseDate->setPlatform($platform);
                         $releaseDate->setDate(new \DateTime(date('Y-m-d H:i:s', $igdbReleaseDate->date)));
                         $this->em->persist($releaseDate);
+			$game->addReleaseDate($releaseDate);
                     }
                 }
             }
