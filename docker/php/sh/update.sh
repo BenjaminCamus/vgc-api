@@ -11,7 +11,7 @@ echo_step "composer install"
 composer install
 
 echo_step "database"
-bin/console doctrine:schema:update --force
+bin/console doctrine:schema:update --force --dump-sql
 
 echo_step "cache clear"
 bin/console cache:clear --env=dev
