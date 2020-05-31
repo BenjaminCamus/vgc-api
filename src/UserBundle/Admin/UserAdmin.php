@@ -21,6 +21,7 @@ class UserAdmin extends AbstractAdmin
             ->add('roles')
             ->add('enabled')
             ->add('lastLogin')
+            ->add('players')
             ->add('passwordRequestedAt');
     }
 
@@ -56,6 +57,7 @@ class UserAdmin extends AbstractAdmin
             ->add('roles')
             ->add('enabled')
             ->add('lastLogin')
+            ->add('players')
             ->add('passwordRequestedAt');
     }
 
@@ -70,6 +72,7 @@ class UserAdmin extends AbstractAdmin
             ->add('roles')
             ->add('enabled')
             ->add('lastLogin')
+            ->add('players')
             ->add('passwordRequestedAt');
     }
 }

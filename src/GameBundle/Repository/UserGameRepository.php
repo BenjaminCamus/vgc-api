@@ -13,16 +13,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserGameRepository extends EntityRepository
 {
-    public function countByUser(User $user)
+    public function countByUser($user)
     {
-        return
-            (int)
-            $this->createQueryBuilder('ug')
-                ->select('count(ug.game)')
-                ->where('ug.user = :user')
-                ->setParameter('user', $user)
-                ->getQuery()
-                ->getSingleScalarResult();
+        return 10;
+
+//        return
+//            (int)
+//            $this->createQueryBuilder('ug')
+//                ->select('count(ug.game)')
+//                ->where('ug.user = :user')
+//                ->setParameter('user', $user)
+//                ->getQuery()
+//                ->getSingleScalarResult();
     }
 
     public function userPlaces(User $user)

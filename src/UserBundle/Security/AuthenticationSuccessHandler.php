@@ -54,11 +54,17 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
             $jwt = $this->jwtManager->create($user);
         }
 
+        $players = [];
+        foreach ( $user->getPlayers() as $player) {
+            $players[] = $player->getUsername();
+        }
+
         $payload = [
             'token' => $jwt,
             'username' => $user->getUsername(),
             'email' => $user->getEmail(),
-            'roles' => $user->getRoles()
+            'roles' => $user->getRoles(),
+            'players' => $players,
         ];
 
         $response = new JWTAuthenticationSuccessResponse($jwt);

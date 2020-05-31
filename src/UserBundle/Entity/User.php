@@ -21,6 +21,14 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\JoinTable(name="users_players")
+     * @Serializer\Expose
+     **/
+    private $players;
+
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
@@ -37,6 +45,40 @@ class User extends BaseUser
     {
         parent::__construct();
         // your own logic
+    }
+
+    /**
+     * Add player
+     *
+     * @param User $player
+     *
+     * @return Game
+     */
+    public function addPlayer(User $player)
+    {
+        $this->players[] = $player;
+
+        return $this;
+    }
+
+    /**
+     * Remove player
+     *
+     * @param User $player
+     */
+    public function removePlayer(User $player)
+    {
+        $this->players->removeElement($player);
+    }
+
+    /**
+     * Get players
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPlayers()
+    {
+        return $this->players;
     }
 
     /**
