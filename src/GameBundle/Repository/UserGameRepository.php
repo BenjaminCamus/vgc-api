@@ -15,16 +15,14 @@ class UserGameRepository extends EntityRepository
 {
     public function countByUser($user)
     {
-        return 10;
-
-//        return
-//            (int)
-//            $this->createQueryBuilder('ug')
-//                ->select('count(ug.game)')
-//                ->where('ug.user = :user')
-//                ->setParameter('user', $user)
-//                ->getQuery()
-//                ->getSingleScalarResult();
+        return
+            (int)
+            $this->createQueryBuilder('ug')
+                ->select('count(ug.game)')
+                ->where('ug.user = :user')
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getSingleScalarResult();
     }
 
     public function userPlaces(User $user)

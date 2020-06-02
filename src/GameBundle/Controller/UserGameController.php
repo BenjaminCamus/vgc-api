@@ -27,22 +27,27 @@ class UserGameController extends AbstractFOSRestController
      */
     public function getUserGamesAction(Request $request)
     {
-        $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        $userRepository = $this->getDoctrine()->getRepository('UserBundle:User');
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
         $username = $request->query->get('username');
+        $user = $this->getPlayer($username, $currentUser);
+
         $offset = $request->query->get('offset', 0);
         $offset = $offset < 0 ? 0 : $offset;
         $limit = $request->query->get('limit', 10);
         $limit = $limit < 0 ? 0 : $limit;
         $limit = $limit > 100 ? 100 : $limit;
 
-        $user = $userRepository->findBy([
-            'username' => $username
-        ]);
-
-        $userGames = $userGameRepository->findBy([
+        $userGames = $this->getDoctrine()->getRepository('GameBundle:UserGame')->findBy([
             'user' => $user
         ], [], $limit, $offset);
+
+        if ($user->getUsername() !== $currentUser->getUsername()) {
+            foreach ($userGames as $userGame) {
+                $userGame->setPurchaseContact(null);
+                $userGame->setSaleContact(null);
+            }
+        }
 
         return $userGames;
     }
@@ -55,16 +60,19 @@ class UserGameController extends AbstractFOSRestController
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
-
         $username = $request->query->get('username');
+        $user = $this->getPlayer($username, $currentUser);
+
+        return $this->getDoctrine()->getRepository('GameBundle:UserGame')
+            ->countByUser(/** @scrutinizer ignore-type */ $user);
+    }
+
+    private function getPlayer($username, $currentUser) {
 
         if (is_null($username)) {
             $user = $currentUser;
         } else {
-            $user = $this->getDoctrine()->getRepository('UserBundle:User')->findOneBy([
-                'username' => $username
-            ]);
-
+            $user = $this->getDoctrine()->getRepository('UserBundle:User')->findOneBy(['username' => $username]);
             if (is_null($user)) {
                 throw new HttpException(404, "User Not Found");
             }
@@ -78,8 +86,7 @@ class UserGameController extends AbstractFOSRestController
             throw new HttpException(403, "Denied");
         }
 
-        $userGameRepository = $this->getDoctrine()->getRepository('GameBundle:UserGame');
-        return $userGameRepository->countByUser(/** @scrutinizer ignore-type */ $user);
+        return $user;
     }
 
     /**
