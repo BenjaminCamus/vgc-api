@@ -14,7 +14,7 @@ use Unirest;
 
 class IGDB
 {
-    const IGDB_URL = 'https://api-v3.igdb.com/';
+    const IGDB_URL = 'https://api.igdb.com/v4/';
     private $em;
     private $igdbKey;
 
