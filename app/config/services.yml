@@ -8,7 +8,8 @@ services:
         class: GameBundle\Services\IGDB
         arguments:
           $em: '@doctrine.orm.entity_manager'
-          $igdbKey: '%igdb_key%'
+          $twitchClientId: '%twitch_client_id%'
+          $twitchClientSecret: '%twitch_client_secret%'
 
     my_success_handler:
         class: UserBundle\Security\AuthenticationSuccessHandler

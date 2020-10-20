@@ -14,14 +14,32 @@ use Unirest;
 
 class IGDB
 {
+    const TWITCH_URL = 'https://id.twitch.tv/oauth2/token';
     const IGDB_URL = 'https://api.igdb.com/v4/';
     private $em;
-    private $igdbKey;
+    private $twitchClientId;
+    private $twitchClientSecret;
 
-    public function __construct(EntityManager $em, $igdbKey)
+    public function __construct(EntityManager $em, $twitchClientId, $twitchClientSecret)
     {
         $this->em = $em;
-        $this->igdbKey = $igdbKey;
+        $this->twitchClientId = $twitchClientId;
+        $this->twitchClientSecret = $twitchClientSecret;
+    }
+
+    private function auth()
+    {
+        $response = Unirest\Request::post(self::TWITCH_URL
+            . '?client_id=' . $this->twitchClientId
+            . '&client_secret=' . $this->twitchClientSecret
+            . '&grant_type=client_credentials'
+        );
+
+        if ($response->code == 200) {
+            return $response->body->access_token;
+        } else {
+            return false;
+        }
     }
 
     public function get($id)
@@ -67,11 +85,13 @@ class IGDB
             . 'limit 30;'
             . $param;
 
+        ;
+
         $response = Unirest\Request::post(self::IGDB_URL . 'games',
-            array(
-                'user-key' => $this->igdbKey,
-                'Accept' => 'application/json'
-            ),
+            [
+                'Client-Id' => $this->twitchClientId,
+                'Authorization' => 'Bearer ' . $this->auth(),
+            ],
             $body
         );
 
@@ -97,8 +117,8 @@ class IGDB
         $game = $gameRepository->findOneByIgdbId($id);
 
         if (null === $game) {
-	    $game = new Game();
-	    $game->setIgdbId($id);
+            $game = new Game();
+            $game->setIgdbId($id);
         }
 
         foreach (['screenshot', 'video', 'developer', 'publisher', 'mode', 'theme', 'genre'] as $type) {
@@ -110,7 +130,7 @@ class IGDB
         // Get IGDB game
         $igdb = $this->get($game->getIgdbId());
 
-	if (!isset($igdb[0])) {
+        if (!isset($igdb[0])) {
             throw new HttpException(404, "IGDB Game Not Found");
         }
 
@@ -175,12 +195,12 @@ class IGDB
                 }
             }
         }
-	
+
         if (null !== $game->getReleaseDates()) {
             foreach ($game->getReleaseDates() as $releaseDate) {
                 $this->em->remove($releaseDate);
             }
-	    $game->resetReleaseDate();
+            $game->resetReleaseDate();
         }
 
         // Series
@@ -235,7 +255,7 @@ class IGDB
         }
 
         $game->setIgdbUpdate(true);
-	$this->em->persist($game);
+        $this->em->persist($game);
 
         // Save Release Dates
         if (isset($igdbGame->release_dates)) {
@@ -249,7 +269,7 @@ class IGDB
                         $releaseDate->setPlatform($platform);
                         $releaseDate->setDate(new \DateTime(date('Y-m-d H:i:s', $igdbReleaseDate->date)));
                         $this->em->persist($releaseDate);
-			$game->addReleaseDate($releaseDate);
+                        $game->addReleaseDate($releaseDate);
                     }
                 }
             }
