@@ -158,13 +158,13 @@ class BatchController extends AbstractFOSRestController
             // Boucle sur les lignes du CSV
             while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 
-                if ($row > 1) {
+                if ($row > 0) {
 
                     // Nom du jeu
                     $name = $data[0];
 
                     // Noms des séries
-                    $num = count($data) - 1;
+                    $num = count($data);
                     $seriesNames = [];
                     for ($c = 1; $c < $num; $c++) {
 
